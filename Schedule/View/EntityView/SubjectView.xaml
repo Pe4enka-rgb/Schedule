@@ -1,0 +1,72 @@
+﻿
+<Page
+    x:Class="Schedule.View.EntityView.SubjectView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:evm="clr-namespace:Schedule.ViewModels.EntityViewModels"
+    xmlns:local="clr-namespace:Schedule.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="SubjectFrame"
+    d:DataContext="{d:DesignInstance {x:Type evm:SubjectViewModel}}"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <b:Interaction.Triggers>
+        <b:EventTrigger EventName="Loaded">
+            <b:InvokeCommandAction Command="{Binding LoadDataCommand}" />
+        </b:EventTrigger>
+    </b:Interaction.Triggers>
+    <Page.Resources>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="16" />
+            <Setter Property="Background" Value="White" />
+
+        </Style>
+        <Style x:Key="defaultStyle">
+            <Setter Property="ItemsControl.Background" Value="Snow" />
+            <Setter Property="ItemsControl.FontSize" Value="16" />
+        </Style>
+    </Page.Resources>
+
+    <DockPanel Style="{StaticResource defaultStyle}">
+        <TreeView DockPanel.Dock="Left">
+            <TreeViewItem Header="qwqweeqe" />
+        </TreeView>
+
+        <WrapPanel DockPanel.Dock="Top">
+            <Button Name="BtnAdd" Content="Добавить" />
+            <Button Name="BtnDelete" Content="Удалить" />
+            <Button Name="BtnEdit" Content="Изменить" />
+        </WrapPanel>
+
+        <DataGrid
+            Width="auto"
+            DockPanel.Dock="Top"
+            HeadersVisibility="Column"
+            ItemsSource="{Binding Subjects}">
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="auto"
+                    Binding="{Binding Name}"
+                    Header="Название" />
+                <DataGridTextColumn
+                    Width="auto"
+                    Binding="{Binding Difficulty}"
+                    Header="Сложность" />
+                <DataGridTextColumn
+                    Width="auto"
+                    Binding="{Binding HoursPerDay}"
+                    Header="Часов в День" />
+                <DataGridTextColumn
+                    Width="auto"
+                    Binding="{Binding HoursPerWeek}"
+                    Header="Часов в Неделю" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </DockPanel>
+
+</Page>
