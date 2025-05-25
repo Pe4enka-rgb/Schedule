@@ -13,6 +13,10 @@
     mc:Ignorable="d">
 
     <DockPanel Background="Snow">
-        <DataGrid dataGrid2D:ItemsSource.RowsSource="{Binding Array2DOfStrings}" HeadersVisibility="All" />
+        <DataGrid
+            dataGrid2D:ItemsSource.RowsSource="{Binding Array2DOfStrings}"
+            AutoGenerateColumns="True"
+            GridLinesVisibility="All"
+            HeadersVisibility="All" />
     </DockPanel>
 </Page>

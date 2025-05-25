@@ -22,11 +22,10 @@
             <TextBlock FontSize="30" Text="Nitro" />
         </StackPanel>
         <DataGrid
-            dataGrid2D:Index.StartAt="1"
-            dataGrid2D:ItemsSource.Array2D="{Binding Array2DOfStrings}"
             dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding SchoolClasses}"
-            dataGrid2D:ItemsSource.ColumnsSource="{Binding ListOfStrings}"
+            dataGrid2D:ItemsSource.ColumnsSource="{Binding Lessons}"
             dataGrid2D:ItemsSource.RowHeadersSource="{Binding BellModels}"
+            AutoGenerateColumns="True"
             GridLinesVisibility="All"
             HeadersVisibility="All" />
 

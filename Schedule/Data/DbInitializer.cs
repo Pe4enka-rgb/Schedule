@@ -91,13 +91,12 @@ namespace Schedule.Data {
 			for (int i = 0; i < _classes.Count; i++) {
 				for (int j = 0; j < bellNumber; j++) {
 					_lessons[i + j] = new Lesson() { Bell = _bells[j], Subject = _subjects[j] };
+					await _db.Lessons.AddAsync(_lessons[i + j]);
 				}
 			}
 
-
-
 			//await _db.Lessons.AddRangeAsync(_lessons);
-			//await _db.SaveChangesAsync();
+			await _db.SaveChangesAsync();
 		}
 
 		private List<SchoolClass> _classes;

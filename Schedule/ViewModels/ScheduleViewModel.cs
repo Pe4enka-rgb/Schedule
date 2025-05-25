@@ -3,7 +3,6 @@ using Schedule.DB.Entity;
 using Schedule.Interfaces;
 using Schedule.Model;
 using Schedule.ViewModels.Base;
-using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Schedule.ViewModels {
@@ -12,9 +11,6 @@ namespace Schedule.ViewModels {
 		private readonly Interfaces.IRepository<Bell> _bellRepository;
 		private readonly Interfaces.IRepository<Day> _dayRepository;
 		private readonly Interfaces.IRepository<Lesson> _lessonRepository;
-
-
-
 
 		#region Properies
 
@@ -61,22 +57,15 @@ namespace Schedule.ViewModels {
 			set { Set(ref _schoolClassModels, value); }
 		}
 
+		private List<Lesson> _Lessons;
+		public List<Lesson> Lessons {
+			get { return _Lessons; }
+			set { Set(ref _Lessons, value); }
+		}
 
-		public IEnumerable<ScheduleModel> Schedules { get; set; }
 		#endregion
-		private ObservableCollection<SchoolClass> Classes;
-		/*
-			Datagrid :
-				ColumnHeader (список) - Название класса (1а, 4б) SchoolClass.Grade.Year + SchoolClass.Letter
-				RowHeader - Bell (Отсортированный по возрастанию)
 
-
-		 */
-
-
-		// событие loaded которое загружает имеющееся расписание в datagrid
-
-		#region
+		#region Commands
 		private ICommand _LoadDataCommand;
 
 		public ICommand LoadDataCommand =>
@@ -87,6 +76,8 @@ namespace Schedule.ViewModels {
 			SchoolClasses = new(_schoolClassRepository.Items.ToList());
 
 			Bells = new(_bellRepository.Items.ToList());
+
+			Lessons = new(_lessonRepository.Items.ToList());
 
 			BellModels = new();
 			foreach (var bell in Bells) {
@@ -99,7 +90,7 @@ namespace Schedule.ViewModels {
 			}
 
 
-			int classNumber = 10;
+			int classNumber = SchoolClasses.Count;
 			var temStrings = new List<string>();
 
 			ListOfStrings = new List<List<string>>();
@@ -117,9 +108,6 @@ namespace Schedule.ViewModels {
 					Array2DOfStrings[i, j] = i.ToString() + " " + j.ToString();
 				}
 			}
-
-
-
 		}
 
 		#endregion
@@ -128,12 +116,13 @@ namespace Schedule.ViewModels {
 		public ScheduleViewModel(
 			Interfaces.IRepository<SchoolClass> schoolClassRepository,
 			Interfaces.IRepository<Bell> bellRepository,
-			Interfaces.IRepository<Day> dayRepository) : base() {
+			Interfaces.IRepository<Day> dayRepository,
+			IRepository<Lesson> lessonRepository
+			) : base() {
 			_schoolClassRepository = schoolClassRepository;
 			_bellRepository = bellRepository;
 			_dayRepository = dayRepository;
-
-
+			_lessonRepository = lessonRepository;
 		}
 	}
 }
