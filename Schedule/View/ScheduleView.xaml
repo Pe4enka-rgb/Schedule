@@ -18,16 +18,32 @@
     </b:Interaction.Triggers>
 
     <DockPanel Background="DarkCyan">
-        <StackPanel DockPanel.Dock="Left">
-            <TextBlock FontSize="30" Text="Nitro" />
+        <StackPanel>
+            <TextBlock
+                HorizontalAlignment="Center"
+                DockPanel.Dock="Left"
+                FontSize="24"
+                Foreground="Snow"
+                Text="Предметы" />
+            <ListBox
+                Background="DarkCyan"
+                DockPanel.Dock="Left"
+                Foreground="Snow"
+                ItemsSource="{Binding Subjects}" />
         </StackPanel>
         <DataGrid
+            dataGrid2D:ItemsSource.Array2D="{Binding Array2DOfStrings}"
             dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding SchoolClasses}"
-            dataGrid2D:ItemsSource.ColumnsSource="{Binding Lessons}"
             dataGrid2D:ItemsSource.RowHeadersSource="{Binding BellModels}"
             AutoGenerateColumns="True"
+            DockPanel.Dock="Top"
+            FontSize="18"
             GridLinesVisibility="All"
-            HeadersVisibility="All" />
+            HeadersVisibility="All"
+            ItemsSource="{Binding}"
+            SelectionMode="Single"
+            SelectionUnit="CellOrRowHeader" />
+        <Grid DockPanel.Dock="Bottom" />
 
     </DockPanel>
 </Page>

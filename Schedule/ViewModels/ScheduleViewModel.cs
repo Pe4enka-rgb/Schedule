@@ -8,9 +8,10 @@ using System.Windows.Input;
 namespace Schedule.ViewModels {
 	internal class ScheduleViewModel : ViewModel {
 		private readonly IRepository<SchoolClass> _schoolClassRepository;
-		private readonly Interfaces.IRepository<Bell> _bellRepository;
-		private readonly Interfaces.IRepository<Day> _dayRepository;
-		private readonly Interfaces.IRepository<Lesson> _lessonRepository;
+		private readonly IRepository<Bell> _bellRepository;
+		private readonly IRepository<Day> _dayRepository;
+		private readonly IRepository<Lesson> _lessonRepository;
+		private readonly IRepository<Subject> _subjectsRepository;
 
 		#region Properies
 
@@ -31,6 +32,12 @@ namespace Schedule.ViewModels {
 
 			get { return _subjectsList; }
 			set { Set(ref _subjectsList, value); }
+		}
+		private List<Subject> _Subjects;
+
+		public List<Subject> Subjects {
+			get { return _Subjects; }
+			set { Set(ref _Subjects, value); }
 		}
 
 		private List<Bell> _bells;
@@ -80,6 +87,9 @@ namespace Schedule.ViewModels {
 			Lessons = new(_lessonRepository.Items.ToList());
 
 			BellModels = new();
+
+			Subjects = new(_subjectsRepository.Items.ToList());
+
 			foreach (var bell in Bells) {
 				BellModels.Add(new BellModel(bell));
 			}
@@ -117,12 +127,13 @@ namespace Schedule.ViewModels {
 			Interfaces.IRepository<SchoolClass> schoolClassRepository,
 			Interfaces.IRepository<Bell> bellRepository,
 			Interfaces.IRepository<Day> dayRepository,
-			IRepository<Lesson> lessonRepository
-			) : base() {
+			IRepository<Lesson> lessonRepository,
+			IRepository<Subject> subjectsRepository) : base() {
 			_schoolClassRepository = schoolClassRepository;
 			_bellRepository = bellRepository;
 			_dayRepository = dayRepository;
 			_lessonRepository = lessonRepository;
+			_subjectsRepository = subjectsRepository;
 		}
 	}
 }
