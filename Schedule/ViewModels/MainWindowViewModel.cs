@@ -24,7 +24,7 @@ namespace Schedule.ViewModels {
 		private readonly IRepository<Grade> _gradeRepository;
 		private readonly IRepository<Day> _dayRepository;
 
-		private string _Title = "окошко-лушошко";
+		private string _Title = "Расписание";
 
 		public string Title {
 			get { return _Title; }

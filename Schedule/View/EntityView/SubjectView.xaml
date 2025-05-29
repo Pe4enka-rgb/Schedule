@@ -32,9 +32,6 @@
     </Page.Resources>
 
     <DockPanel Style="{StaticResource defaultStyle}">
-        <TreeView DockPanel.Dock="Left">
-            <TreeViewItem Header="qwqweeqe" />
-        </TreeView>
 
         <WrapPanel DockPanel.Dock="Top">
             <Button Name="BtnAdd" Content="Добавить" />

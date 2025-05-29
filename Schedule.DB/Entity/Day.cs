@@ -6,7 +6,7 @@ namespace Schedule.DB.Entity {
 		[Required]
 		public SchoolClass SchoolClass { get; set; }
 		public DayOfWeek DayOfWeek { get; set; }
-		public virtual ICollection<Subject> Subjects { get; set; }
+		public virtual ICollection<Lesson> Lessons { get; set; }
 
 	}
 }

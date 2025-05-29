@@ -10,6 +10,7 @@ namespace Schedule.Model {
 			}
 		}
 
+
 		public SchoolClass SchoolClass { get; set; }
 		public IQueryable<Lesson> Lessons { get; set; }
 

@@ -9,34 +9,17 @@ namespace Schedule.ViewModels.EntityViewModels {
 	internal class BellViewModel : ViewModel {
 		private readonly IRepository<Bell> _bellRepository;
 
-		private ObservableCollection<Bell> _bells;
 
 		#region Properies
+
+		private ObservableCollection<Bell> _bells;
 		public ObservableCollection<Bell> Bells {
-			get { return _bells; }
-			set { Set(ref _bells, value); }
+			get => _bells;
+			set => Set(ref _bells, value);
 		}
 		#endregion
 
-
-		#region TEST
-
-		private string[,] _strings;
-		public string[,] Strings {
-			get { return _strings; }
-			set { Set(ref _strings, value); }
-		}
-
-		private string[] _columnHeaderStrings;
-		public string[] ColumnHeaderStrings {
-			get { return _columnHeaderStrings; }
-			set { Set(ref _columnHeaderStrings, value); }
-		}
-
-
-		#endregion
-
-		#region
+		#region Commands
 		private ICommand _LoadDataCommand;
 
 		public ICommand LoadDataCommand =>
@@ -45,20 +28,7 @@ namespace Schedule.ViewModels.EntityViewModels {
 		private async Task OnLoadDataCommandExecuted() {
 			await Task.CompletedTask;
 
-			int classNumber = 10;
-
-			Strings = new string[Bells.Count, classNumber];
-			for (int i = 0; i < Bells.Count; i++) {
-				for (int j = 0; j < classNumber; j++) {
-					Strings[i, j] = i.ToString() + " " + j.ToString();
-				}
-
-			}
-
-			ColumnHeaderStrings = new string[classNumber];
-			for (int i = 0; i < classNumber; i++) {
-				ColumnHeaderStrings[i] = i.ToString();
-			}
+			Bells = new(_bellRepository.Items.ToArray());
 		}
 
 		#endregion
@@ -67,10 +37,6 @@ namespace Schedule.ViewModels.EntityViewModels {
 		public BellViewModel(IRepository<Bell> bellRepository) {
 
 			this._bellRepository = bellRepository;
-			Bells = new(_bellRepository.Items.ToArray());
-
-
-
 
 		}
 	}

@@ -31,12 +31,13 @@
                 Header="Справочники" />
             <MenuItem
                 Width="auto"
-                Command="{Binding Path=ScheduleViewCommand}"
+                Command="{Binding Path=DayScheduleViewCommand}"
                 Header="Расписание" />
             <MenuItem
                 Width="auto"
-                Command="{Binding Path=DayScheduleViewCommand}"
-                Header="Расписание на день" />
+                Command="{Binding Path=ScheduleViewCommand}"
+                Header="Расписание"
+                Visibility="Hidden" />
         </Menu>
         <Border
             BorderBrush="SlateGray"

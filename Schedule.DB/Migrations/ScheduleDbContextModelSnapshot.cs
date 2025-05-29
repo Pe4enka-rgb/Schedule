@@ -156,7 +156,7 @@ namespace Schedule.DB.Migrations
 
                     b.HasIndex("DayId");
 
-                    b.ToTable("Subjects");
+                    b.ToTable("Lessons");
                 });
 
             modelBuilder.Entity("Schedule.DB.Entity.Day", b =>
@@ -203,13 +203,13 @@ namespace Schedule.DB.Migrations
             modelBuilder.Entity("Schedule.DB.Entity.Subject", b =>
                 {
                     b.HasOne("Schedule.DB.Entity.Day", null)
-                        .WithMany("Subjects")
+                        .WithMany("Lessons")
                         .HasForeignKey("DayId");
                 });
 
             modelBuilder.Entity("Schedule.DB.Entity.Day", b =>
                 {
-                    b.Navigation("Subjects");
+                    b.Navigation("Lessons");
                 });
 
             modelBuilder.Entity("Schedule.DB.Entity.SchoolClass", b =>

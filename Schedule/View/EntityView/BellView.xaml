@@ -56,9 +56,6 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        <DataGrid
-            dataGrid2D:ItemsSource.Array2D="{Binding Strings}"
-            GridLinesVisibility="All"
-            HeadersVisibility="None" />
+        
     </DockPanel>
 </Page>

@@ -4,5 +4,8 @@ namespace Schedule.DB.Entity {
 	public class Lesson : BaseEntity {
 		public Subject Subject { get; set; }
 		public Bell Bell { get; set; }
+		public override string ToString() {
+			return Subject.Name;
+		}
 	}
 }

@@ -20,6 +20,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="gong-wpf-dragdrop" Version="4.0.0" />
     <PackageReference Include="Gu.Wpf.DataGrid2D" Version="0.2.4" />
     <PackageReference Include="MathCore.WPF" Version="0.0.48.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />

@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
 namespace Schedule.Model {
-	internal class BellModel : INotifyPropertyChanged {
+	public class BellModel : INotifyPropertyChanged {
 		private string _bellName;
 
 		public string BellName {

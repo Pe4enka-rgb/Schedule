@@ -5,7 +5,9 @@
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dataGrid2D="http://gu.se/DataGrid2D"
+    xmlns:e="clr-namespace:Schedule.DB.Entity;assembly=Schedule.DB"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:model="clr-namespace:Schedule.Model"
     d:DesignHeight="450"
     d:DesignWidth="800"
     DataContext="{Binding Path=ScheduleViewModel, Source={StaticResource Locator}}"
@@ -29,20 +31,22 @@
                 Background="DarkCyan"
                 DockPanel.Dock="Left"
                 Foreground="Snow"
-                ItemsSource="{Binding Subjects}" />
+                ItemsSource="{Binding Subjects}"
+                SelectedItem="{Binding SelectedLisBoxLesson}"
+                SelectionMode="Single" />
         </StackPanel>
         <DataGrid
-            dataGrid2D:ItemsSource.Array2D="{Binding Array2DOfStrings}"
             dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding SchoolClasses}"
+            dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonsList}"
             dataGrid2D:ItemsSource.RowHeadersSource="{Binding BellModels}"
+            dataGrid2D:Selected.CellItem="{Binding SelectedDataGridLesson}"
             AutoGenerateColumns="True"
             DockPanel.Dock="Top"
-            FontSize="18"
+            FontSize="16"
             GridLinesVisibility="All"
             HeadersVisibility="All"
-            ItemsSource="{Binding}"
             SelectionMode="Single"
-            SelectionUnit="CellOrRowHeader" />
+            SelectionUnit="Cell" />
         <Grid DockPanel.Dock="Bottom" />
 
     </DockPanel>

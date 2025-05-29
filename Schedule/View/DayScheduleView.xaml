@@ -4,19 +4,62 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dataGrid2D="http://gu.se/DataGrid2D"
-    xmlns:local="clr-namespace:Schedule.View"
+    xmlns:dd="urn:gong-wpf-dragdrop"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:infra="clr-namespace:Schedule.Infrastracture"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="DayScheduleView"
     d:DesignHeight="450"
     d:DesignWidth="800"
     DataContext="{Binding Path=DayScheduleViewModel, Source={StaticResource Locator}}"
     mc:Ignorable="d">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding LoadDataCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
 
     <DockPanel Background="Snow">
+        <StackPanel Background="DarkCyan">
+            <TextBlock
+                HorizontalAlignment="Center"
+                DockPanel.Dock="Left"
+                FontSize="24"
+                Foreground="Snow"
+                Text="Предметы" />
+            <ListBox
+                dd:DragDrop.IsDragSource="True"
+                Background="DarkCyan"
+                DockPanel.Dock="Left"
+                Foreground="Snow"
+                ItemsSource="{Binding Subjects}"
+                SelectedItem="{Binding SelectedListBoxSubject}"
+                SelectionMode="Single" />
+            <StackPanel>
+
+
+                <TextBlock DockPanel.Dock="Bottom" Text="{Binding HoveredValue.Bell.Start}" />
+                <TextBlock DockPanel.Dock="Bottom" Text="{Binding HoveredValue.Subject.Name}" />
+                <TextBlock Text="{Binding SelectedListBoxSubject.Name}" />
+            </StackPanel>
+        </StackPanel>
         <DataGrid
-            dataGrid2D:ItemsSource.RowsSource="{Binding Array2DOfStrings}"
+            dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding SchoolClasses}"
+            dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonModels2DList}"
+            dataGrid2D:ItemsSource.RowHeadersSource="{Binding BellModelsList}"
+            dataGrid2D:Selected.CellItem="{Binding SelectedDataGridLesson}"
+            dataGrid2D:Selected.Index="{Binding SelectedDataGridLessonIndex}"
+            dd:DragDrop.DropHandler="{Binding}"
+            dd:DragDrop.IsDropTarget="True"
             AutoGenerateColumns="True"
             GridLinesVisibility="All"
-            HeadersVisibility="All" />
+            HeadersVisibility="All"
+            SelectionMode="Extended"
+            SelectionUnit="Cell">
+            <i:Interaction.Behaviors>
+                <infra:MouseEnterBehavior />
+            </i:Interaction.Behaviors>
+        </DataGrid>
     </DockPanel>
 </Page>

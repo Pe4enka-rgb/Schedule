@@ -15,29 +15,16 @@ namespace Schedule.ViewModels {
 
 		#region Properies
 
-		private List<List<string>> _listOfStrings;
-		public List<List<string>> ListOfStrings {
-			get => _listOfStrings;
-			set => Set(ref _listOfStrings, value);
-		}
+		#region Entity
 
-		private string[,] _array2DOfOfStrings;
-		public string[,] Array2DOfStrings {
-			get => _array2DOfOfStrings;
-			set => Set(ref _array2DOfOfStrings, value);
-		}
 
-		private List<List<Subject>> _subjectsList;
-		public List<List<Subject>> SubjectsList {
 
-			get { return _subjectsList; }
-			set { Set(ref _subjectsList, value); }
-		}
-		private List<Subject> _Subjects;
+
+		private List<Subject> _subjects;
 
 		public List<Subject> Subjects {
-			get { return _Subjects; }
-			set { Set(ref _Subjects, value); }
+			get { return _subjects; }
+			set { Set(ref _subjects, value); }
 		}
 
 		private List<Bell> _bells;
@@ -46,78 +33,92 @@ namespace Schedule.ViewModels {
 			set { Set(ref _bells, value); }
 		}
 
-		private List<BellModel> _bellModels;
-		public List<BellModel> BellModels {
-			get { return _bellModels; }
-			set { Set(ref _bellModels, value); }
-		}
-
 		private List<SchoolClass> _schoolClasses;
 		public List<SchoolClass> SchoolClasses {
 			get { return _schoolClasses; }
 			set { Set(ref _schoolClasses, value); }
 		}
 
-		private List<SchoolClassModel> _schoolClassModels;
-		public List<SchoolClassModel> SchoolClassModels {
-			get { return _schoolClassModels; }
-			set { Set(ref _schoolClassModels, value); }
+		private List<Lesson> _lessons;
+		public List<Lesson> Lessons {
+			get { return _lessons; }
+			set { Set(ref _lessons, value); }
 		}
 
-		private List<Lesson> _Lessons;
-		public List<Lesson> Lessons {
-			get { return _Lessons; }
-			set { Set(ref _Lessons, value); }
+		private List<Day> _days;
+		public List<Day> Days {
+			get { return _days; }
+			set { Set(ref _days, value); }
 		}
 
 		#endregion
 
+		#region SelectedItems
+
+		private Lesson _selectedDataGridLesson;
+		public Lesson SelectedDataGridLesson {
+			get => _selectedDataGridLesson;
+			set => Set(ref _selectedDataGridLesson, value);
+		}
+
+		private Subject _selectedLisBoxLesson;
+		public Subject SelectedLisBoxLesson {
+			get => _selectedLisBoxLesson;
+			set => Set(ref _selectedLisBoxLesson, value);
+		}
+
+		#endregion
+
+		#region Model
+
+
+
+
+		private List<BellModel> _bellModels;
+		public List<BellModel> BellModels {
+			get { return _bellModels; }
+			set { Set(ref _bellModels, value); }
+		}
+
+		private List<ScheduleModel> _scheduleModels;
+		public List<ScheduleModel> ScheduleModels {
+			get { return _scheduleModels; }
+			set { Set(ref _scheduleModels, value); }
+		}
+
+
+		private List<List<LessonModel>> _lessonsList;
+		public List<List<LessonModel>> LessonsList {
+			get { return _lessonsList; }
+			set { Set(ref _lessonsList, value); }
+		}
+		#endregion
+
+		#endregion
+
 		#region Commands
-		private ICommand _LoadDataCommand;
+
+		private ICommand _loadDataCommand;
 
 		public ICommand LoadDataCommand =>
-			_LoadDataCommand ?? new LambdaCommand(OnLoadDataCommandExecuted);
-
-
+			_loadDataCommand ??= new LambdaCommand(OnLoadDataCommandExecuted);
 		private void OnLoadDataCommandExecuted() {
-			SchoolClasses = new(_schoolClassRepository.Items.ToList());
 
-			Bells = new(_bellRepository.Items.ToList());
-
-			Lessons = new(_lessonRepository.Items.ToList());
-
-			BellModels = new();
-
-			Subjects = new(_subjectsRepository.Items.ToList());
 
 			foreach (var bell in Bells) {
 				BellModels.Add(new BellModel(bell));
 			}
 
-			SchoolClassModels = new();
-			foreach (var schoolClass in SchoolClasses) {
-				SchoolClassModels.Add(new SchoolClassModel(schoolClass));
-			}
 
 
-			int classNumber = SchoolClasses.Count;
-			var temStrings = new List<string>();
-
-			ListOfStrings = new List<List<string>>();
-			for (int i = 0; i < Bells.Count; i++) {
-				temStrings = new List<string>();
-				for (int j = 0; j < classNumber; j++) {
-					temStrings.Add(i.ToString() + " " + j.ToString());
+			for (int i = 0; i < SchoolClasses.Count; i++) {
+				List<LessonModel> temp = new();
+				for (int j = 0; j < Bells.Count; j++) {
+					temp.Add(new LessonModel(Lessons.FirstOrDefault(l => l.Id == i * Bells.Count + j + 1)));
 				}
-				ListOfStrings.Add(temStrings);
+				LessonsList.Add(temp);
 			}
 
-			Array2DOfStrings = new string[Bells.Count, classNumber];
-			for (int i = 0; i < Bells.Count; i++) {
-				for (int j = 0; j < classNumber; j++) {
-					Array2DOfStrings[i, j] = i.ToString() + " " + j.ToString();
-				}
-			}
 		}
 
 		#endregion
@@ -134,6 +135,29 @@ namespace Schedule.ViewModels {
 			_dayRepository = dayRepository;
 			_lessonRepository = lessonRepository;
 			_subjectsRepository = subjectsRepository;
+
+
+			SchoolClasses = new(_schoolClassRepository.Items.ToList());
+
+			Bells = new(_bellRepository.Items.ToList());
+
+			Lessons = new(_lessonRepository.Items.ToList());
+
+			BellModels = new();
+
+			Subjects = new(_subjectsRepository.Items.ToList());
+
+			Days = new(_dayRepository.Items.ToList());
+
+			LessonsList = new List<List<LessonModel>>();
+
+
+
+
+
+
+
+
 		}
 	}
 }
