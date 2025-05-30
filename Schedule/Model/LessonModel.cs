@@ -7,10 +7,7 @@ namespace Schedule.Model {
 		private Subject _subject;
 		public Subject Subject {
 			get => _subject;
-			set {
-				_subject = value;
-				OnPropertyChanged();
-			}
+			set => Set(ref _subject, value);
 		}
 
 		private Bell _bell;
@@ -36,10 +33,6 @@ namespace Schedule.Model {
 			Lesson = lesson;
 			Subject = lesson.Subject;
 			Bell = lesson.Bell;
-		}
-
-		public override string ToString() {
-			return Subject.Name;
 		}
 	}
 }

@@ -6,16 +6,27 @@ using Schedule.Interfaces;
 using Schedule.Model;
 using Schedule.ViewModels.Base;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Schedule.ViewModels {
-	public class DayScheduleViewModel : ViewModel, IDropTarget {
+	public class DayScheduleViewModel : ViewModel, INotifyCollectionChanged, IDropTarget {
 		private readonly IRepository<SchoolClass> _schoolClassRepository;
 		private readonly IRepository<Subject> _subjectsRepository;
 		private readonly IRepository<Bell> _bellRepository;
 		private readonly IRepository<Day> _dayRepository;
 		private readonly IRepository<Lesson> _lessonRepository;
+
+		#region View
+
+		private CollectionViewSource _lessonssViewSource;
+		public ICollectionView LessonsView => _lessonssViewSource?.View;
+
+
+		#endregion
 
 		#region Hovered
 
@@ -86,15 +97,20 @@ namespace Schedule.ViewModels {
 		public ObservableCollection<ObservableCollection<LessonModel>> LessonModels2DObservableCollection {
 			get => _lessonModels2DObservableCollection;
 			set {
-				if (Set(ref _lessonModels2DObservableCollection, value))
-					OnPropertyChanged();
+				if (Set(ref _lessonModels2DObservableCollection, value)) {
+					_lessonssViewSource = new CollectionViewSource() {
+						Source = value,
+					};
+					_lessonssViewSource.DeferRefresh();
+
+				}
 			}
 		}
 
 		private List<BellModel> _bellModelsList;
 		public List<BellModel> BellModelsList {
 			get => _bellModelsList;
-			set => _bellModelsList = value;
+			set => Set(ref _bellModelsList, value);
 		}
 
 		#endregion
@@ -225,5 +241,6 @@ namespace Schedule.ViewModels {
 
 		}
 
+		public event NotifyCollectionChangedEventHandler? CollectionChanged;
 	}
 }

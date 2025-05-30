@@ -13,14 +13,15 @@
     d:DesignWidth="800"
     DataContext="{Binding Path=DayScheduleViewModel, Source={StaticResource Locator}}"
     mc:Ignorable="d">
+
     <i:Interaction.Triggers>
         <i:EventTrigger EventName="Loaded">
             <i:InvokeCommandAction Command="{Binding LoadDataCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-
     <DockPanel Background="Snow">
+
         <StackPanel Background="DarkCyan">
             <TextBlock
                 HorizontalAlignment="Center"
@@ -37,30 +38,30 @@
                 SelectedItem="{Binding SelectedListBoxSubject}"
                 SelectionMode="Single" />
             <StackPanel>
-
-
                 <TextBlock DockPanel.Dock="Bottom" Text="{Binding HoveredValue.Bell.Start}" />
                 <TextBlock DockPanel.Dock="Bottom" Text="{Binding HoveredValue.Subject.Name}" />
                 <TextBlock Text="{Binding SelectedListBoxSubject.Name}" />
             </StackPanel>
         </StackPanel>
+        <!--  DATA GRID  -->
         <DataGrid
-            dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding SchoolClasses}"
-            dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonModels2DObservableCollection}"
-            dataGrid2D:ItemsSource.RowHeadersSource="{Binding BellModelsList}"
-            dataGrid2D:Selected.CellItem="{Binding SelectedDataGridLesson}"
-            dataGrid2D:Selected.Index="{Binding SelectedDataGridLessonIndex}"
+            dataGrid2D:Cell.Template="{StaticResource LessonModelTemplate}"
+            dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding SchoolClasses, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+            dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonModels2DList, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay}"
+            dataGrid2D:ItemsSource.RowHeadersSource="{Binding BellModelsList, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+            dataGrid2D:Selected.CellItem="{Binding SelectedDataGridLesson, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+            dataGrid2D:Selected.Index="{Binding SelectedDataGridLessonIndex, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
             dd:DragDrop.DropHandler="{Binding}"
-            dataGrid2D:Index.StartAt="1"
             dd:DragDrop.IsDropTarget="True"
             AutoGenerateColumns="True"
-            GridLinesVisibility="All"
             HeadersVisibility="All"
+            IsReadOnly="True"
             SelectionMode="Extended"
             SelectionUnit="Cell">
             <i:Interaction.Behaviors>
                 <infra:MouseEnterBehavior />
             </i:Interaction.Behaviors>
         </DataGrid>
+        <Grid Background="DarkCyan" DockPanel.Dock="Bottom" />
     </DockPanel>
 </Page>

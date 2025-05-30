@@ -18,6 +18,9 @@
         <TextBlock Text="{Binding Year}" />
     </DataTemplate>
 
+    <DataTemplate x:Key="LessonModelTemplate" DataType="{x:Type m:LessonModel}">
+        <TextBlock Text="{Binding Subject.Name}" />
+    </DataTemplate>
     <!--<DataTemplate DataType="{x:Type m:BellModel}">
         <WrapPanel HorizontalAlignment="Center">
             <TextBlock Text="{Binding BellName}" />
