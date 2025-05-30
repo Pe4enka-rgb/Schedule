@@ -12,9 +12,10 @@ namespace Schedule.ViewModels.EntityViewModels {
 		private readonly IRepository<Grade> _gradeRepository;
 		private readonly IUserDialog<Grade> _userDialog;
 
-		private ObservableCollection<Grade> _grades;
 
 		#region Properies
+
+		private ObservableCollection<Grade> _grades;
 		public ObservableCollection<Grade> Grades {
 			get { return _grades; }
 			set { Set(ref _grades, value); }

@@ -79,11 +79,7 @@ namespace Schedule.ViewModels {
 		private List<List<LessonModel>> _lessonModels2DList;
 		public List<List<LessonModel>> LessonModels2DList {
 			get => _lessonModels2DList;
-			set {
-				_lessonModels2DList = value;
-				OnPropertyChanged();
-
-			}
+			set => Set(ref _lessonModels2DList, value);
 		}
 
 		private ObservableCollection<ObservableCollection<LessonModel>> _lessonModels2DObservableCollection;
@@ -92,7 +88,6 @@ namespace Schedule.ViewModels {
 			set {
 				if (Set(ref _lessonModels2DObservableCollection, value))
 					OnPropertyChanged();
-
 			}
 		}
 
@@ -129,9 +124,9 @@ namespace Schedule.ViewModels {
 		private ICommand _loadDataCommand;
 
 		public ICommand LoadDataCommand =>
-			_loadDataCommand ??= new LambdaCommandAsync(OnLoadDataCommandExecuted);
+			_loadDataCommand ??= new LambdaCommand(OnLoadDataCommandExecuted);
 
-		private Task OnLoadDataCommandExecuted() {
+		private void OnLoadDataCommandExecuted() {
 			LessonModels2DList = SchoolClasses
 				.Select((_, i) => Bells
 					.Select((_, j) => new LessonModel(
@@ -140,9 +135,7 @@ namespace Schedule.ViewModels {
 				.ToList();
 
 			BellModelsList = Bells.Select(bell => new BellModel(bell)).ToList();
-			return Task.CompletedTask;
 		}
-
 
 
 		void IDropTarget.DragOver(IDropInfo dropInfo) {
@@ -173,7 +166,8 @@ namespace Schedule.ViewModels {
 
 				LessonModels2DList[HoveredColumnIndex][HoveredRowIndex]
 						.Subject = draggedItem;
-
+				LessonModels2DObservableCollection[HoveredColumnIndex][HoveredRowIndex]
+					.Subject = draggedItem;
 				SelectedDataGridLesson =
 					LessonModels2DList[HoveredColumnIndex][HoveredRowIndex];
 
@@ -213,16 +207,16 @@ namespace Schedule.ViewModels {
 			LessonModels2DList = SchoolClasses
 				.Select((_, i) => Bells
 					.Select((_, j) => new LessonModel(
-						Lessons.FirstOrDefault(l => l.Id == i * Bells.Count + j + 1)))
+						Lessons.FirstOrDefault(l => l.Id == i * Bells.Count + j + 1)!))
 					.ToList())
 				.ToList();
 
-			//LessonModels2DObservableCollection = SchoolClasses
-			//	.Select((_, i) => Bells
-			//		.Select((_, j) => new LessonModel(
-			//			Lessons.FirstOrDefault(l => l.Id == i * Bells.Count + j + 1)))
-			//		.ToObservableCollection())
-			//	.ToObservableCollection();
+			LessonModels2DObservableCollection = SchoolClasses
+				.Select((_, i) => Bells
+					.Select((_, j) => new LessonModel(
+						Lessons.FirstOrDefault(l => l.Id == i * Bells.Count + j + 1)))
+					.ToObservableCollection())
+				.ToObservableCollection();
 
 			BellModelsList = new List<BellModel>();
 			foreach (var bell in Bells) {

@@ -46,11 +46,12 @@
         </StackPanel>
         <DataGrid
             dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding SchoolClasses}"
-            dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonModels2DList}"
+            dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonModels2DObservableCollection}"
             dataGrid2D:ItemsSource.RowHeadersSource="{Binding BellModelsList}"
             dataGrid2D:Selected.CellItem="{Binding SelectedDataGridLesson}"
             dataGrid2D:Selected.Index="{Binding SelectedDataGridLessonIndex}"
             dd:DragDrop.DropHandler="{Binding}"
+            dataGrid2D:Index.StartAt="1"
             dd:DragDrop.IsDropTarget="True"
             AutoGenerateColumns="True"
             GridLinesVisibility="All"

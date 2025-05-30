@@ -20,6 +20,7 @@
             <MenuItem Command="{Binding Path=GradeViewCommand}" Header="Уровни обучения" />
             <MenuItem Command="{Binding Path=SubjectViewCommand}" Header="Предметы" />
             <MenuItem Command="{Binding Path=BellViewCommand}" Header="Звонки" />
+            <MenuItem Command="{Binding Path=SchoolClassViewCommand}" Header="Классы" />
         </Menu>
         <DockPanel Background="Snow">
             <Frame Content="{Binding CurrentViewModel}" NavigationUIVisibility="Hidden" />

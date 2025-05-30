@@ -66,9 +66,8 @@ namespace Schedule.ViewModels {
 		#region SchoolClass View Command
 		private ICommand _schoolClassViewCommand;
 		public ICommand SchoolClassViewCommand => _schoolClassViewCommand
-		?? new LambdaCommand(OnSchoolClassViewCommandExecuted, CanSchoolClassViewCommandExecute);
+		??= new LambdaCommand(OnSchoolClassViewCommandExecuted);
 
-		private bool CanSchoolClassViewCommandExecute() => true;
 
 		private void OnSchoolClassViewCommandExecuted() {
 			CurrentViewModel = new SchoolClassViewModel(
