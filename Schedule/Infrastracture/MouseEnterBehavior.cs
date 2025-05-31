@@ -50,21 +50,17 @@ namespace Schedule.Infrastracture {
 			// Получаем ViewModel
 			var viewModel = dataGrid.DataContext as DayScheduleViewModel;
 			if (viewModel != null) {
-				viewModel.HoveredRowIndex = rowIndex;
-				viewModel.HoveredColumnIndex = columnIndex;
-				viewModel.HoveredValue = viewModel.LessonModels2DList[columnIndex][rowIndex];
+				try {
+					viewModel.HoveredRowIndex = rowIndex;
+					viewModel.HoveredColumnIndex = columnIndex;
+					viewModel.HoveredValue = viewModel.LessonModels2DTransposed[columnIndex][rowIndex];
+				}
+				catch (NullReferenceException) {
+					viewModel.HoveredValue = null;
+				}
+
 			}
 
-		}
-
-		private static T FindVisualParent<T>(DependencyObject child) where T : DependencyObject {
-			while (child != null) {
-				if (child is T t)
-					return t;
-
-				child = VisualTreeHelper.GetParent(child);
-			}
-			return null;
 		}
 	}
 }

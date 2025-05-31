@@ -7,25 +7,27 @@ namespace Schedule.Model {
 		private Subject _subject;
 		public Subject Subject {
 			get => _subject;
-			set => Set(ref _subject, value);
+			set {
+				if (Set(ref _subject, value))
+					this.Lesson.Subject = value;
+			}
 		}
 
 		private Bell _bell;
 		public Bell Bell {
 			get => _bell;
-			set {
-				_bell = value;
-				OnPropertyChanged();
-			}
+			set => Set(ref _bell, value);
 		}
 
 		private Lesson _lesson;
-
 		public Lesson Lesson {
 			get => _lesson;
 			set {
-				_lesson = value;
-				OnPropertyChanged();
+				if (Set(ref _lesson, value)) {
+					Subject = value.Subject;
+					Bell = value.Bell;
+				}
+
 			}
 		}
 

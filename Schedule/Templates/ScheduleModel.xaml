@@ -2,30 +2,34 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:e="clr-namespace:Schedule.DB.Entity;assembly=Schedule.DB"
-    xmlns:m="clr-namespace:Schedule.Model">
+    xmlns:m="clr-namespace:Schedule.Model"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime">
     <DataTemplate DataType="{x:Type e:Subject}">
         <TextBlock Text="{Binding Name}" />
     </DataTemplate>
 
-    <!--<DataTemplate DataType="{x:Type e:SchoolClass}">
+    <DataTemplate DataType="{x:Type e:SchoolClass}">
         <WrapPanel>
-            <TextBlock Text="{Binding Grade}" />
+            <TextBlock Text="{Binding Grade.Year}" />
             <TextBlock Text="{Binding Letter}" />
         </WrapPanel>
-    </DataTemplate>-->
+    </DataTemplate>
 
-    <DataTemplate DataType="{x:Type e:Grade}">
+    <DataTemplate x:Key="GradeTemplate" DataType="{x:Type e:Grade}">
         <TextBlock Text="{Binding Year}" />
     </DataTemplate>
 
     <DataTemplate x:Key="LessonModelTemplate" DataType="{x:Type m:LessonModel}">
         <TextBlock Text="{Binding Subject.Name}" />
     </DataTemplate>
-    <!--<DataTemplate DataType="{x:Type m:BellModel}">
-        <WrapPanel HorizontalAlignment="Center">
-            <TextBlock Text="{Binding BellName}" />
+
+    <DataTemplate x:Key="BellModelTemplate" DataType="{x:Type m:BellModel}">
+        <WrapPanel>
+            <TextBlock Text="{Binding Bell.Start}" />
+            <TextBlock Text=" - " />
+            <TextBlock Text="{Binding Bell.End}" />
         </WrapPanel>
-    </DataTemplate>-->
+    </DataTemplate>
 
     <DataTemplate DataType="{x:Type e:Bell}">
         <WrapPanel>

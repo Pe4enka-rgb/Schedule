@@ -22,22 +22,18 @@
 
     <DockPanel Background="Snow">
         <WrapPanel DockPanel.Dock="Top">
-
             <Button
                 x:Name="BtnAdd"
                 Command="{Binding}"
                 Content="Добавить" />
-
             <Button
                 x:Name="BtnDelete"
                 Command="{Binding}"
                 Content="Удалить" />
-
             <Button
                 x:Name="BtnEdit"
                 Command="{Binding}"
                 Content="Изменить" />
-
         </WrapPanel>
 
         <DataGrid DockPanel.Dock="Top" ItemsSource="{Binding Bells}">
@@ -56,6 +52,6 @@
             </DataGrid.Columns>
         </DataGrid>
 
-        
+
     </DockPanel>
 </Page>

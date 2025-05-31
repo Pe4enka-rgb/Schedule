@@ -7,9 +7,5 @@ namespace Schedule.DB.Entity {
 		public string Letter { get; set; } = string.Empty;
 		public virtual ICollection<Day> Days { get; set; } = new HashSet<Day>();
 		public Grade Grade { get; set; }
-
-		public override string ToString() {
-			return Grade.Year.ToString() + Letter;
-		}
 	}
 }

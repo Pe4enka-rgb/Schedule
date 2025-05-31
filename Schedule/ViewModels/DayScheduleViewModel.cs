@@ -1,30 +1,24 @@
 ﻿using GongSolutions.Wpf.DragDrop;
 using Gu.Wpf.DataGrid2D;
 using MathCore.WPF.Commands;
+using Schedule.Data;
 using Schedule.DB.Entity;
 using Schedule.Interfaces;
 using Schedule.Model;
 using Schedule.ViewModels.Base;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Windows;
-using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Schedule.ViewModels {
-	public class DayScheduleViewModel : ViewModel, INotifyCollectionChanged, IDropTarget {
+	public class DayScheduleViewModel : ViewModel, IDropTarget {
+		#region Fields
+
 		private readonly IRepository<SchoolClass> _schoolClassRepository;
 		private readonly IRepository<Subject> _subjectsRepository;
 		private readonly IRepository<Bell> _bellRepository;
 		private readonly IRepository<Day> _dayRepository;
 		private readonly IRepository<Lesson> _lessonRepository;
-
-		#region View
-
-		private CollectionViewSource _lessonssViewSource;
-		public ICollectionView LessonsView => _lessonssViewSource?.View;
-
 
 		#endregion
 
@@ -57,8 +51,11 @@ namespace Schedule.ViewModels {
 
 		#region Entity
 
-
-
+		private ObservableCollection<Day> _days;
+		public ObservableCollection<Day> Days {
+			get { return _days; }
+			set { Set(ref _days, value); }
+		}
 
 		private List<Bell> _bells;
 		public List<Bell> Bells {
@@ -83,28 +80,21 @@ namespace Schedule.ViewModels {
 			get { return _subjects; }
 			set { Set(ref _subjects, value); }
 		}
+
 		#endregion
 
 		#region Model
 
-		private List<List<LessonModel>> _lessonModels2DList;
-		public List<List<LessonModel>> LessonModels2DList {
-			get => _lessonModels2DList;
-			set => Set(ref _lessonModels2DList, value);
+		private ObservableCollection<ObservableCollection<LessonModel>> _lessonModels2DTransposed;
+		public ObservableCollection<ObservableCollection<LessonModel>> LessonModels2DTransposed {
+			get => _lessonModels2DTransposed;
+			set => Set(ref _lessonModels2DTransposed, value);
 		}
 
 		private ObservableCollection<ObservableCollection<LessonModel>> _lessonModels2DObservableCollection;
 		public ObservableCollection<ObservableCollection<LessonModel>> LessonModels2DObservableCollection {
 			get => _lessonModels2DObservableCollection;
-			set {
-				if (Set(ref _lessonModels2DObservableCollection, value)) {
-					_lessonssViewSource = new CollectionViewSource() {
-						Source = value,
-					};
-					_lessonssViewSource.DeferRefresh();
-
-				}
-			}
+			set => Set(ref _lessonModels2DObservableCollection, value);
 		}
 
 		private List<BellModel> _bellModelsList;
@@ -135,24 +125,39 @@ namespace Schedule.ViewModels {
 			set { Set(ref _selectedListBoxSubject, value); }
 		}
 
+
 		#endregion
 
-		private ICommand _loadDataCommand;
+		#region Commands
 
+		private ICommand _loadDataCommand;
 		public ICommand LoadDataCommand =>
 			_loadDataCommand ??= new LambdaCommand(OnLoadDataCommandExecuted);
-
 		private void OnLoadDataCommandExecuted() {
-			LessonModels2DList = SchoolClasses
-				.Select((_, i) => Bells
-					.Select((_, j) => new LessonModel(
-						Lessons.FirstOrDefault(l => l.Id == i * Bells.Count + j + 1)!))
-					.ToList())
-				.ToList();
+			Subjects = new(_subjectsRepository.Items.ToList());
+			SchoolClasses = new(_schoolClassRepository.Items.ToList());
+			Bells = new(_bellRepository.Items.ToList());
+			Lessons = new(_lessonRepository.Items.ToList());
+			Days = new(_dayRepository.Items.ToObservableCollection());
 
+			LessonModels2DTransposed = new ObservableCollection<ObservableCollection<LessonModel>>(
+				Days.Select(day =>
+					new ObservableCollection<LessonModel>(day.Lessons.ToLessonModelCollection())
+				).ToObservableCollection()
+			);
 			BellModelsList = Bells.Select(bell => new BellModel(bell)).ToList();
 		}
 
+		private ICommand _deleteLessonCommand;
+		public ICommand DeleteLessonCommand =>
+			_deleteLessonCommand ??= new LambdaCommand(OnDeleteLessonCommandExecuted);
+
+		private void OnDeleteLessonCommandExecuted() {
+			LessonModels2DTransposed[SelectedDataGridLessonIndex.Column][SelectedDataGridLessonIndex.Row] =
+				new(new Lesson() {
+					Bell = LessonModels2DTransposed[SelectedDataGridLessonIndex.Column][SelectedDataGridLessonIndex.Row].Bell
+				});
+		}
 
 		void IDropTarget.DragOver(IDropInfo dropInfo) {
 
@@ -163,36 +168,36 @@ namespace Schedule.ViewModels {
 
 			dropInfo.VisualTarget.CaptureMouse();
 
-
 			dropInfo.Effects = DragDropEffects.Copy;
-			dropInfo.DropTargetHintState = DropHintState.Active;
+			//dropInfo.DropTargetHintState = DropHintState.Active;
+			dropInfo.EffectText = "Поместить " + SelectedListBoxSubject.Name;
 			dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-			dropInfo.EffectText = dropInfo.TargetItem.ToString();
 
 		}
 
 		void IDropTarget.Drop(IDropInfo dropInfo) {
 
-			if (dropInfo.Data is Subject draggedItem && dropInfo.TargetItem is ListRowView targetRow) {
+			if (dropInfo.Data is Subject draggedItem) {
 
-				if (targetRow != null) {
-					dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-					dropInfo.Effects = DragDropEffects.Copy;
-				}
+				dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+				dropInfo.Effects = DragDropEffects.Copy;
 
-				LessonModels2DList[HoveredColumnIndex][HoveredRowIndex]
-						.Subject = draggedItem;
-				LessonModels2DObservableCollection[HoveredColumnIndex][HoveredRowIndex]
+				LessonModels2DTransposed[HoveredColumnIndex][HoveredRowIndex]
 					.Subject = draggedItem;
-				SelectedDataGridLesson =
-					LessonModels2DList[HoveredColumnIndex][HoveredRowIndex];
 
+				SelectedDataGridLesson =
+					LessonModels2DTransposed[HoveredColumnIndex][HoveredRowIndex];
 
 				dropInfo.VisualTarget.ReleaseMouseCapture();
 			}
+
 		}
+		#endregion
 
-
+		#region Constructors
+		/// <summary>
+		/// DI constructor
+		/// </summary>
 		public DayScheduleViewModel() { }
 
 		public DayScheduleViewModel(
@@ -206,41 +211,14 @@ namespace Schedule.ViewModels {
 			_dayRepository = dayRepository;
 			_lessonRepository = lessonRepository;
 			_subjectsRepository = subjectsRepository;
-
-			Subjects = new(_subjectsRepository.Items.ToList());
-			SchoolClasses = new(_schoolClassRepository.Items.ToList());
-			Bells = new(_bellRepository.Items.ToList());
-			Lessons = new(_lessonRepository.Items.ToList());
-
-			//LessonModels2DList = new List<List<LessonModel>>();
-			//for (int i = 0; i < SchoolClasses.Count; i++) {
-			//	List<LessonModel> temp = new();
-			//	for (int j = 0; j < Bells.Count; j++) {
-			//		temp.Add(new LessonModel(Lessons.FirstOrDefault(l => l.Id == i * Bells.Count + j + 1)));
-			//	}
-			//	LessonModels2DList.Add(temp);
-			//}
-			LessonModels2DList = SchoolClasses
-				.Select((_, i) => Bells
-					.Select((_, j) => new LessonModel(
-						Lessons.FirstOrDefault(l => l.Id == i * Bells.Count + j + 1)!))
-					.ToList())
-				.ToList();
-
-			LessonModels2DObservableCollection = SchoolClasses
-				.Select((_, i) => Bells
-					.Select((_, j) => new LessonModel(
-						Lessons.FirstOrDefault(l => l.Id == i * Bells.Count + j + 1)))
-					.ToObservableCollection())
-				.ToObservableCollection();
-
-			BellModelsList = new List<BellModel>();
-			foreach (var bell in Bells) {
-				BellModelsList.Add(new BellModel(bell));
-			}
+			//LessonModels2DObservableCollection = SchoolClasses
+			//	.Select((_, i) => Bells
+			//		.Select((_, j) => new LessonModel(
+			//			Lessons.FirstOrDefault(l => l.Id == i * Bells.Count + j + 1)))
+			//		.ToObservableCollection())
+			//	.ToObservableCollection();
 
 		}
-
-		public event NotifyCollectionChangedEventHandler? CollectionChanged;
+		#endregion
 	}
 }

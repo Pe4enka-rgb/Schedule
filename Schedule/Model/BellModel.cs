@@ -1,37 +1,31 @@
 ﻿using Schedule.DB.Entity;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+using Schedule.ViewModels.Base;
 
 namespace Schedule.Model {
-	public class BellModel : INotifyPropertyChanged {
+	public class BellModel : ViewModel {
 		private string _bellName;
 
 		public string BellName {
-			get => _bellName;
-			set {
-				if (_bellName != value) {
-					_bellName = value;
-					OnPropertyChanged();
-				}
-			}
+			get => Start.ToLongTimeString() + " - " + End.ToLongTimeString();
+			set => Set(ref _bellName, value);
 		}
 
+		private TimeOnly _start;
+		public TimeOnly Start {
+			get => _start;
+			set => Set(ref _start, value);
+		}
+
+		private TimeOnly _end;
+		public TimeOnly End {
+			get => _end;
+			set => Set(ref _end, value);
+		}
 		public Bell Bell { get; set; }
-
-
-		public event PropertyChangedEventHandler PropertyChanged;
-
-		protected void OnPropertyChanged([CallerMemberName] string propertyName = null) {
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-		}
 
 		public BellModel(Bell bell) {
 			Bell = bell;
-			BellName = bell.Start.ToShortTimeString() + " - " + bell.End.ToShortTimeString();
-		}
 
-		public override string ToString() {
-			return BellName;
 		}
 	}
 }

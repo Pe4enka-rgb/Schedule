@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using Schedule.DB.Context;
 using Schedule.DB.Entity;
+using Schedule.Infrastracture;
 
 namespace Schedule.Data {
 	public class DbInitializer {
@@ -80,23 +81,22 @@ namespace Schedule.Data {
 		private Day[] _days;
 		private async Task InitializeDays() {
 			int daysInWeek = 7;
-			_days = new Day[_classes.Count * daysInWeek];
+			_days = new Day[_classes.Count /** daysInWeek*/];
 
-			for (int i = 0; i < daysInWeek; i++) {
-				for (int j = 0; j < _classes.Count; j++) {
-					List<Lesson> lessons = new List<Lesson>();
-					for (int k = 0; k < _bells.Length; k++)
-						lessons.Add(_lessons[j + k]);
-
-					_days[i * _classes.Count + j] = new Day() {
-						DayOfWeek = (DayOfWeek)i,
-						SchoolClass = _classes[j],
-						Lessons = lessons
-					};
-
-
-				}
+			var groupedByBell = _lessons
+				.GroupBy(l => l.Bell)
+				.Select(g => g.ToList())
+				.ToList();
+			var transposed = groupedByBell.Transpose();
+			//for (int i = 0; i < daysInWeek; i++) {
+			for (int j = 0; j < _classes.Count; j++) {
+				_days[/*i * _classes.Count*/ j] = new Day() {
+					DayOfWeek = ( DayOfWeek.Monday ),
+					SchoolClass = _classes[j],
+					Lessons = transposed[j]
+				};
 			}
+			//}
 			await _db.Days.AddRangeAsync(_days);
 			await _db.SaveChangesAsync();
 
@@ -136,5 +136,7 @@ namespace Schedule.Data {
 			await _db.SchoolClasses.AddRangeAsync(_classes);
 			await _db.SaveChangesAsync();
 		}
+
+
 	}
 }

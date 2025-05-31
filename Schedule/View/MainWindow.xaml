@@ -37,7 +37,7 @@
                 Width="auto"
                 Command="{Binding Path=ScheduleViewCommand}"
                 Header="Расписание"
-                Visibility="Hidden" />
+                 />
         </Menu>
         <Border
             BorderBrush="SlateGray"

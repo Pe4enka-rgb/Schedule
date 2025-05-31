@@ -30,7 +30,7 @@
                 Command="{Binding DeleteSchoolClassCommand}"
                 CommandParameter="{Binding SelectedSchoolClass}"
                 Content="Удалить" />
-            <Button 
+            <Button
                 Margin="3"
                 Padding="3"
                 Command="{Binding EditSchoolClassCommand}"
