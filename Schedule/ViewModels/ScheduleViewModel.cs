@@ -3,6 +3,7 @@ using Schedule.DB.Entity;
 using Schedule.Interfaces;
 using Schedule.Model;
 using Schedule.ViewModels.Base;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace Schedule.ViewModels {
@@ -12,13 +13,20 @@ namespace Schedule.ViewModels {
 		private readonly IRepository<Day> _dayRepository;
 		private readonly IRepository<Lesson> _lessonRepository;
 		private readonly IRepository<Subject> _subjectsRepository;
+		private readonly IRepository<Grade> _gradesRepository;
 
 		#region Properies
+
+
 
 		#region Entity
 
 
-
+		private List<Grade> _grades;
+		public List<Grade> Grades {
+			get => _grades;
+			set => Set(ref _grades, value);
+		}
 
 		private List<Subject> _subjects;
 
@@ -61,18 +69,21 @@ namespace Schedule.ViewModels {
 			set => Set(ref _selectedDataGridLesson, value);
 		}
 
-		private Subject _selectedLisBoxLesson;
-		public Subject SelectedLisBoxLesson {
-			get => _selectedLisBoxLesson;
-			set => Set(ref _selectedLisBoxLesson, value);
+		private SchoolClass _selectedSchoolClass;
+		public SchoolClass SelectedSchoolClass {
+			get => _selectedSchoolClass;
+			set => Set(ref _selectedSchoolClass, value);
 		}
 
 		#endregion
 
 		#region Model
 
-
-
+		private ObservableCollection<GradeWithSchoolClasses> _gradeWithSchoolClassesList;
+		public ObservableCollection<GradeWithSchoolClasses> GradeWithSchoolClassesList {
+			get => _gradeWithSchoolClassesList;
+			set => Set(ref _gradeWithSchoolClassesList, value);
+		}
 
 		private List<BellModel> _bellModels;
 		public List<BellModel> BellModels {
@@ -104,38 +115,36 @@ namespace Schedule.ViewModels {
 			_loadDataCommand ??= new LambdaCommand(OnLoadDataCommandExecuted);
 		private void OnLoadDataCommandExecuted() {
 
-
-			foreach (var bell in Bells) {
-				BellModels.Add(new BellModel(bell));
+			GradeWithSchoolClassesList = new();
+			for (int i = 0; i < Grades.Count; i++) {
+				GradeWithSchoolClassesList
+					.Add(
+						new GradeWithSchoolClasses(
+							Grades[i],
+							SchoolClasses.Where(s => s.Grade.Year == i + 1).ToList()
+						)
+					);
 			}
-
-
-
-			for (int i = 0; i < SchoolClasses.Count; i++) {
-				List<LessonModel> temp = new();
-				for (int j = 0; j < Bells.Count; j++) {
-					temp.Add(new LessonModel(Lessons.FirstOrDefault(l => l.Id == i * Bells.Count + j + 1)));
-				}
-				LessonsList.Add(temp);
-			}
-
 		}
 
 		#endregion
 
 		public ScheduleViewModel() { }
 		public ScheduleViewModel(
-			Interfaces.IRepository<SchoolClass> schoolClassRepository,
-			Interfaces.IRepository<Bell> bellRepository,
-			Interfaces.IRepository<Day> dayRepository,
+			IRepository<SchoolClass> schoolClassRepository,
+			IRepository<Bell> bellRepository,
+			IRepository<Day> dayRepository,
 			IRepository<Lesson> lessonRepository,
-			IRepository<Subject> subjectsRepository) : base() {
+			IRepository<Subject> subjectsRepository,
+				IRepository<Grade> gradesRepository) : base() {
 			_schoolClassRepository = schoolClassRepository;
 			_bellRepository = bellRepository;
 			_dayRepository = dayRepository;
 			_lessonRepository = lessonRepository;
 			_subjectsRepository = subjectsRepository;
+			_gradesRepository = gradesRepository;
 
+			Grades = new(_gradesRepository.Items.ToList());
 
 			SchoolClasses = new(_schoolClassRepository.Items.ToList());
 
@@ -151,7 +160,7 @@ namespace Schedule.ViewModels {
 
 			LessonsList = new List<List<LessonModel>>();
 
-
+			//GradeModels = Grades.Select(grade => new GradeModel(grade)).ToList();
 
 
 
@@ -159,5 +168,6 @@ namespace Schedule.ViewModels {
 
 
 		}
+
 	}
 }

@@ -5,9 +5,8 @@
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:dataGrid2D="http://gu.se/DataGrid2D"
-    xmlns:e="clr-namespace:Schedule.DB.Entity;assembly=Schedule.DB"
+    xmlns:m="clr-namespace:Schedule.Model"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:model="clr-namespace:Schedule.Model"
     d:DesignHeight="450"
     d:DesignWidth="800"
     DataContext="{Binding Path=ScheduleViewModel, Source={StaticResource Locator}}"
@@ -20,30 +19,31 @@
     </b:Interaction.Triggers>
 
     <DockPanel Background="DarkCyan">
-        <StackPanel>
-            <TextBlock
-                HorizontalAlignment="Center"
-                DockPanel.Dock="Left"
-                FontSize="24"
-                Foreground="Snow"
-                Text="Предметы" />
-            <ListBox
-                Background="DarkCyan"
-                DockPanel.Dock="Left"
-                Foreground="Snow"
-                ItemsSource="{Binding Subjects}"
-                SelectedItem="{Binding SelectedLisBoxLesson}"
-                SelectionMode="Single" />
-        </StackPanel>
+
+        <!--  Список годов обучения  -->
+        <TreeView
+            Margin="3"
+            Padding="10"
+            DockPanel.Dock="Left"
+            Foreground="Snow"
+            ItemTemplate="{StaticResource GradeWithClassesTemplate}"
+            ItemsSource="{Binding GradeWithSchoolClassesList}">
+
+            <!--  Список классов в каждом году  -->
+            <TreeView.Resources>
+                
+            </TreeView.Resources>
+
+        </TreeView>
+
         <DataGrid
-            dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding SchoolClasses}"
+            dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding DaysOfWeek}"
             dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonsList}"
-            dataGrid2D:ItemsSource.RowHeadersSource="{Binding BellModels}"
+            dataGrid2D:ItemsSource.RowHeadersSource="{Binding Bells}"
             dataGrid2D:Selected.CellItem="{Binding SelectedDataGridLesson}"
             AutoGenerateColumns="True"
             DockPanel.Dock="Top"
             FontSize="16"
-            GridLinesVisibility="All"
             HeadersVisibility="All"
             SelectionMode="Single"
             SelectionUnit="Cell" />

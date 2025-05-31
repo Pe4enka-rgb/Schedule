@@ -127,10 +127,10 @@ namespace Schedule.Data {
 			_classes = new(_gradesNumber * 4);
 
 			for (int i = 1; i <= _gradesNumber; i++) {
-				_classes.Add(new SchoolClass() { Grade = _grades[i - 1], Letter = "a" });
-				_classes.Add(new SchoolClass() { Grade = _grades[i - 1], Letter = "б" });
-				_classes.Add(new SchoolClass() { Grade = _grades[i - 1], Letter = "в" });
-				_classes.Add(new SchoolClass() { Grade = _grades[i - 1], Letter = "г" });
+				_classes.Add(new SchoolClass() { Grade = _grades[i - 1], Letter = "a".ToUpper() });
+				_classes.Add(new SchoolClass() { Grade = _grades[i - 1], Letter = "б".ToUpper() });
+				_classes.Add(new SchoolClass() { Grade = _grades[i - 1], Letter = "в".ToUpper() });
+				_classes.Add(new SchoolClass() { Grade = _grades[i - 1], Letter = "г".ToUpper() });
 			}
 
 			await _db.SchoolClasses.AddRangeAsync(_classes);

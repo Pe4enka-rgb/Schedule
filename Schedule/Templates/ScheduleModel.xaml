@@ -7,11 +7,18 @@
     <DataTemplate DataType="{x:Type e:Subject}">
         <TextBlock Text="{Binding Name}" />
     </DataTemplate>
-
     <DataTemplate DataType="{x:Type e:SchoolClass}">
         <WrapPanel>
             <TextBlock Text="{Binding Grade.Year}" />
             <TextBlock Text="{Binding Letter}" />
+        </WrapPanel>
+    </DataTemplate>
+
+    <DataTemplate x:Key="SchoolClassTemplate" DataType="{x:Type e:SchoolClass}">
+        <WrapPanel>
+            <TextBlock Text="{Binding Grade.Year}" />
+            <TextBlock Text="{Binding Letter}" />
+            <TextBlock Text=" Класс" />
         </WrapPanel>
     </DataTemplate>
 
@@ -38,4 +45,15 @@
             <TextBlock Text="{Binding End}" />
         </WrapPanel>
     </DataTemplate>
+
+    <HierarchicalDataTemplate
+        x:Key="GradeWithClassesTemplate"
+        DataType="{x:Type m:GradeWithSchoolClasses}"
+        ItemTemplate="{StaticResource SchoolClassTemplate}"
+        ItemsSource="{Binding SchoolClasses}">
+        <WrapPanel>
+            <TextBlock Text="{Binding Grade.Year}" />
+            <TextBlock Text=" Год" />
+        </WrapPanel>
+    </HierarchicalDataTemplate>
 </ResourceDictionary>
