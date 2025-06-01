@@ -20,7 +20,7 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <DockPanel Background="Snow">
+    <DockPanel Background="DarkCyan">
 
         <StackPanel Background="DarkCyan">
             <TextBlock
@@ -42,12 +42,13 @@
                 <TextBlock DockPanel.Dock="Bottom" Text="{Binding HoveredValue.Subject.Name}" />
                 <TextBlock Text="{Binding SelectedListBoxSubject.Name}" />
             </StackPanel>
-        </StackPanel><WrapPanel DockPanel.Dock="Top">
+        </StackPanel>
+        <WrapPanel DockPanel.Dock="Top">
 
             <Button
-                x:Name="BtnAdd"
-                Command="{Binding}"
-                Content="Добавить" />
+                x:Name="BtnSave"
+                Command="{Binding SaveCommand}"
+                Content="Сохранить" />
 
             <Button
                 x:Name="BtnDelete"
@@ -56,38 +57,38 @@
 
             <Button
                 x:Name="BtnEdit"
-                Command="{Binding}"
-                Content="Изменить" />
+                Command="{Binding DrainTableCommand}"
+                Content="Опустошить" />
 
         </WrapPanel>
-        <!--  DATA GRID  -->
-        <DataGrid
-            dataGrid2D:Cell.Template="{StaticResource LessonModelTemplate}"
-            dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding SchoolClasses, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
-            dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonModels2DTransposed, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay}"
-            dataGrid2D:ItemsSource.RowHeadersSource="{Binding BellModelsList, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
-            dataGrid2D:Selected.CellItem="{Binding SelectedDataGridLesson, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
-            dataGrid2D:Selected.Index="{Binding SelectedDataGridLessonIndex, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
-            dd:DragDrop.DropHandler="{Binding}"
-            dd:DragDrop.IsDropTarget="True"
-            AutoGenerateColumns="True"
-            HeadersVisibility="All"
-            IsReadOnly="True"
-            RowHeaderTemplate="{StaticResource BellModelTemplate}"
-            SelectionMode="Extended"
-            SelectionUnit="Cell">
-            <i:Interaction.Behaviors>
-                <infra:MouseEnterBehavior />
-            </i:Interaction.Behaviors>
-            <DataGrid.InputBindings>
-                <KeyBinding
-                    Key="Delete"
-                    Command="{Binding DeleteLessonCommand}"
-                     />
-            </DataGrid.InputBindings>
+        <WrapPanel>
+            <TextBlock />
+            <!--  DATA GRID  -->
+            <DataGrid
+                dataGrid2D:Cell.Template="{StaticResource LessonTemplate}"
+                dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding SchoolClasses, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+                dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonModels2DTransposed, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay}"
+                dataGrid2D:ItemsSource.RowHeadersSource="{Binding BellModelsList, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+                dataGrid2D:Selected.CellItem="{Binding SelectedDataGridLesson, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+                dataGrid2D:Selected.Index="{Binding SelectedDataGridLessonIndex, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+                dd:DragDrop.DropHandler="{Binding}"
+                dd:DragDrop.IsDropTarget="True"
+                AutoGenerateColumns="True"
+                HeadersVisibility="All"
+                IsReadOnly="True"
+                RowHeaderTemplate="{StaticResource BellModelTemplate}"
+                SelectionMode="Extended"
+                SelectionUnit="Cell">
+                <i:Interaction.Behaviors>
+                    <infra:MouseEnterBehavior />
+                </i:Interaction.Behaviors>
+                <DataGrid.InputBindings>
+                    <KeyBinding Key="Delete" Command="{Binding DeleteLessonCommand}" />
+                </DataGrid.InputBindings>
 
-        </DataGrid>
+            </DataGrid>
+        </WrapPanel>
         <!--  DATA GRID  -->
-        <Grid Background="DarkCyan" />
+        <Grid DockPanel.Dock="Bottom" />
     </DockPanel>
 </Page>

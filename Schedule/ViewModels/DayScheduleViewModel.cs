@@ -140,11 +140,13 @@ namespace Schedule.ViewModels {
 			Lessons = new(_lessonRepository.Items.ToList());
 			Days = new(_dayRepository.Items.ToObservableCollection());
 
-			LessonModels2DTransposed = new ObservableCollection<ObservableCollection<LessonModel>>(
-				Days.Select(day =>
-					new ObservableCollection<LessonModel>(day.Lessons.ToLessonModelCollection())
-				).ToObservableCollection()
-			);
+			LessonModels2DTransposed = Days
+					.Where(day => day.DayOfWeek == DayOfWeek.Monday)
+					.Select(day => day.Lessons.ToLessonModelCollection().ToObservableCollection())
+					.ToObservableCollection()
+			;
+
+
 			BellModelsList = Bells.Select(bell => new BellModel(bell)).ToList();
 		}
 
@@ -153,10 +155,40 @@ namespace Schedule.ViewModels {
 			_deleteLessonCommand ??= new LambdaCommand(OnDeleteLessonCommandExecuted);
 
 		private void OnDeleteLessonCommandExecuted() {
-			LessonModels2DTransposed[SelectedDataGridLessonIndex.Column][SelectedDataGridLessonIndex.Row] =
-				new(new Lesson() {
-					Bell = LessonModels2DTransposed[SelectedDataGridLessonIndex.Column][SelectedDataGridLessonIndex.Row].Bell
-				});
+			LessonModels2DTransposed
+					[SelectedDataGridLessonIndex.Column]
+					[SelectedDataGridLessonIndex.Row]
+					.Subject = null;
+			// Update Lesson
+			_lessonRepository.Update(
+				LessonModels2DTransposed
+						[SelectedDataGridLessonIndex.Column]
+						[SelectedDataGridLessonIndex.Row]
+						.Lesson
+			);
+		}
+
+		private ICommand _drainTableCommand;
+		public ICommand DrainTableCommand =>
+			_drainTableCommand ??= new LambdaCommand(OnDrainTableCommandCommandExecuted);
+
+		private void OnDrainTableCommandCommandExecuted() {
+			LessonModels2DTransposed = new ObservableCollection<ObservableCollection<LessonModel>>();
+			for (int i = 0; i < SchoolClasses.Count; i++) {
+				ObservableCollection<LessonModel> temp = new ObservableCollection<LessonModel>();
+				for (int j = 0; j < Bells.Count; j++) {
+					temp.Add(new(new() { Bell = Bells[j] }));
+				}
+				LessonModels2DTransposed.Add(temp);
+			}
+		}
+
+		private ICommand _saveCommand;
+		public ICommand SaveCommand =>
+			_saveCommand ??= new LambdaCommand(OnSaveCommandExecuted);
+
+		private void OnSaveCommandExecuted() {
+
 		}
 
 		void IDropTarget.DragOver(IDropInfo dropInfo) {
@@ -186,11 +218,20 @@ namespace Schedule.ViewModels {
 					.Subject = draggedItem;
 
 				SelectedDataGridLesson =
-					LessonModels2DTransposed[HoveredColumnIndex][HoveredRowIndex];
+					LessonModels2DTransposed
+						[HoveredColumnIndex]
+						[HoveredRowIndex]
+					;
+				// Update Lesson
+				_lessonRepository.Update(
+					LessonModels2DTransposed
+						[HoveredColumnIndex]
+						[HoveredRowIndex]
+						.Lesson
+					);
 
 				dropInfo.VisualTarget.ReleaseMouseCapture();
 			}
-
 		}
 		#endregion
 

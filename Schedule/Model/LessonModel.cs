@@ -16,7 +16,10 @@ namespace Schedule.Model {
 		private Bell _bell;
 		public Bell Bell {
 			get => _bell;
-			set => Set(ref _bell, value);
+			set {
+				if (Set(ref _bell, value))
+					this.Lesson.Bell = value;
+			}
 		}
 
 		private Lesson _lesson;

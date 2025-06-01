@@ -5,6 +5,7 @@ using Schedule.Model;
 using Schedule.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Lesson = Schedule.DB.Entity.Lesson;
 
 namespace Schedule.ViewModels {
 	internal class ScheduleViewModel : ViewModel {
@@ -17,7 +18,13 @@ namespace Schedule.ViewModels {
 
 		#region Properies
 
-
+		private ObservableCollection<DayOfWeek> _daysOfWeek;
+		public ObservableCollection<DayOfWeek> DaysOfWeek {
+			get => _daysOfWeek;
+			set {
+				Set(ref _daysOfWeek, value);
+			}
+		}
 
 		#region Entity
 
@@ -72,8 +79,15 @@ namespace Schedule.ViewModels {
 		private SchoolClass _selectedSchoolClass;
 		public SchoolClass SelectedSchoolClass {
 			get => _selectedSchoolClass;
-			set => Set(ref _selectedSchoolClass, value);
+			set {
+				if (Set(ref _selectedSchoolClass, value)) {
+					LoadTableData(value);
+				}
+
+			}
 		}
+
+
 
 		#endregion
 
@@ -85,21 +99,8 @@ namespace Schedule.ViewModels {
 			set => Set(ref _gradeWithSchoolClassesList, value);
 		}
 
-		private List<BellModel> _bellModels;
-		public List<BellModel> BellModels {
-			get { return _bellModels; }
-			set { Set(ref _bellModels, value); }
-		}
-
-		private List<ScheduleModel> _scheduleModels;
-		public List<ScheduleModel> ScheduleModels {
-			get { return _scheduleModels; }
-			set { Set(ref _scheduleModels, value); }
-		}
-
-
-		private List<List<LessonModel>> _lessonsList;
-		public List<List<LessonModel>> LessonsList {
+		private ObservableCollection<ObservableCollection<Lesson>> _lessonsList;
+		public ObservableCollection<ObservableCollection<Lesson>> LessonsList {
 			get { return _lessonsList; }
 			set { Set(ref _lessonsList, value); }
 		}
@@ -114,7 +115,6 @@ namespace Schedule.ViewModels {
 		public ICommand LoadDataCommand =>
 			_loadDataCommand ??= new LambdaCommand(OnLoadDataCommandExecuted);
 		private void OnLoadDataCommandExecuted() {
-
 			GradeWithSchoolClassesList = new();
 			for (int i = 0; i < Grades.Count; i++) {
 				GradeWithSchoolClassesList
@@ -125,6 +125,26 @@ namespace Schedule.ViewModels {
 						)
 					);
 			}
+
+			DaysOfWeek = new();
+			for (int i = 1; i < 7; i++) {
+				DaysOfWeek.Add((DayOfWeek)i);
+			}
+
+
+
+		}
+
+		private void LoadTableData(SchoolClass newSchoolClass) {
+			if (newSchoolClass == null)
+				return;
+			LessonsList = Days
+					.Where(d => d.SchoolClass.Id == newSchoolClass.Id)
+					.OrderBy(d => d.DayOfWeek)
+					.Select(day => day.Lessons.ToObservableCollection())
+					.ToObservableCollection()
+			;
+
 		}
 
 		#endregion
@@ -152,13 +172,11 @@ namespace Schedule.ViewModels {
 
 			Lessons = new(_lessonRepository.Items.ToList());
 
-			BellModels = new();
-
 			Subjects = new(_subjectsRepository.Items.ToList());
 
 			Days = new(_dayRepository.Items.ToList());
 
-			LessonsList = new List<List<LessonModel>>();
+
 
 			//GradeModels = Grades.Select(grade => new GradeModel(grade)).ToList();
 

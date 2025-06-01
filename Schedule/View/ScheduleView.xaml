@@ -4,13 +4,24 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:data="clr-namespace:Schedule.Data"
     xmlns:dataGrid2D="http://gu.se/DataGrid2D"
+    xmlns:e="clr-namespace:Schedule.DB.Entity;assembly=Schedule.DB"
+    xmlns:infrastracture="clr-namespace:Schedule.Infrastracture"
     xmlns:m="clr-namespace:Schedule.Model"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    Margin="0"
     d:DesignHeight="450"
     d:DesignWidth="800"
     DataContext="{Binding Path=ScheduleViewModel, Source={StaticResource Locator}}"
     mc:Ignorable="d">
+    <Page.Resources>
+        <data:DayOfWeekToRussianStringConverter x:Key="DayOfWeekConverter" />
+        <DataTemplate x:Key="DayOfWeekTemplate" DataType="{x:Type system:DayOfWeek}">
+            <TextBlock Text="{Binding Converter={StaticResource DayOfWeekConverter}}" />
+        </DataTemplate>
+    </Page.Resources>
 
     <b:Interaction.Triggers>
         <b:EventTrigger EventName="Loaded">
@@ -22,7 +33,6 @@
 
         <!--  Список годов обучения  -->
         <TreeView
-            Margin="3"
             Padding="10"
             DockPanel.Dock="Left"
             Foreground="Snow"
@@ -30,13 +40,19 @@
             ItemsSource="{Binding GradeWithSchoolClassesList}">
 
             <!--  Список классов в каждом году  -->
-            <TreeView.Resources>
-                
-            </TreeView.Resources>
-
+            <TreeView.Resources />
+            <!--  Возможность выбрать класс  -->
+            <b:Interaction.Behaviors>
+                <infrastracture:BindableSelectedItemBehavior SelectedItem="{Binding SelectedSchoolClass, Mode=TwoWay}" />
+            </b:Interaction.Behaviors>
         </TreeView>
-
+        <WrapPanel Background="Snow" DockPanel.Dock="Top">
+            <TextBlock FontSize="20" Text="Расписание класса: " />
+            <TextBlock FontSize="20" Text="{Binding SelectedSchoolClass.Grade.Year}" />
+            <TextBlock FontSize="20" Text="{Binding SelectedSchoolClass.Letter}" />
+        </WrapPanel>
         <DataGrid
+            dataGrid2D:Cell.Template="{StaticResource LessonTemplate}"
             dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding DaysOfWeek}"
             dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonsList}"
             dataGrid2D:ItemsSource.RowHeadersSource="{Binding Bells}"
@@ -46,8 +62,17 @@
             FontSize="16"
             HeadersVisibility="All"
             SelectionMode="Single"
-            SelectionUnit="Cell" />
-        <Grid DockPanel.Dock="Bottom" />
+            SelectionUnit="Cell">
+            <!--<DataGrid.Columns>
+                <DataGridTextColumn Header="Понедельник" />
+                <DataGridTextColumn Header="Вторник" />
+                <DataGridTextColumn Header="Среда" />
+                <DataGridTextColumn Header="Четверг" />
+                <DataGridTextColumn Header="Пятница" />
+                <DataGridTextColumn Header="Суббота" />
+            </DataGrid.Columns>-->
+        </DataGrid>
+        <Grid DockPanel.Dock="Bottom"/>
 
     </DockPanel>
 </Page>

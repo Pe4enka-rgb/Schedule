@@ -13,5 +13,7 @@ namespace Schedule.DB.Context {
 		public ScheduleDbContext(DbContextOptions<ScheduleDbContext> options) : base(options) {
 
 		}
+
+
 	}
 }

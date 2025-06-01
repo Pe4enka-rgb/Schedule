@@ -3,8 +3,6 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:DI="clr-namespace:Schedule.Infrastracture.DI"
-    xmlns:local="clr-namespace:Schedule"
-    xmlns:vm="clr-namespace:Schedule.ViewModels"
     StartupUri="View\MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>

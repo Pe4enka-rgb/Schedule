@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Schedule.DB.Context;
 using Schedule.DB.Entity;
-using Schedule.Infrastracture;
 
 namespace Schedule.Data {
 	public class DbInitializer {
@@ -14,8 +13,8 @@ namespace Schedule.Data {
 		}
 
 		public async Task InitializeAsync() {
-			await _db.Database.EnsureDeletedAsync().ConfigureAwait(false);
 
+			await _db.Database.EnsureDeletedAsync().ConfigureAwait(false);
 
 			await _db.Database.EnsureCreatedAsync().ConfigureAwait(false);
 
@@ -23,7 +22,7 @@ namespace Schedule.Data {
 			await InitializeSubjects();
 			await InitializeBells();
 			await InitializeSchoolClasses();
-			await InitializeLessons();
+			//await InitializeLessons();
 			await InitializeDays();
 
 		}
@@ -41,11 +40,13 @@ namespace Schedule.Data {
 			await _db.SaveChangesAsync();
 		}
 
+
+
+
 		private string subjectString =
 			"    Математика\r\n    Алгебра        \r\n    Геометрия       \r\n    Физика          \r\n    Химия           \r\n    Информатика_и_ИКТ\r\n\r\n    Окружающий_мир  \r\n    География       \r\n    Биология        \r\n    Обществознание  \r\n    Литература      \r\n    История         \r\n    ОБЖ            \r\n    Технология     \r\n    Физ-ра          \r\n    Музыка          \r\n    ИЗО             \r\n    МХК             \r\n\r\n    Русский_язык    \r\n    Английский_язык \r\n    Немецкий_язык   \r\n    Иностранный_язык";
 		private string[] _subjectsStrings;
 		private Subject[] _subjects;
-
 		private async Task InitializeSubjects() {
 			subjectString = subjectString.Replace('\n', ' ');
 			subjectString = subjectString.Replace("\r", " ");
@@ -60,6 +61,9 @@ namespace Schedule.Data {
 			await _db.Subjects.AddRangeAsync(_subjects);
 			await _db.SaveChangesAsync();
 		}
+
+
+
 
 		private int bellNumber = 11;
 		private Bell[] _bells;
@@ -78,49 +82,71 @@ namespace Schedule.Data {
 			await _db.Bells.AddRangeAsync(_bells);
 			await _db.SaveChangesAsync();
 		}
+
+
+
+
 		private Day[] _days;
 		private async Task InitializeDays() {
-			int daysInWeek = 7;
-			_days = new Day[_classes.Count /** daysInWeek*/];
+			int workDaysInWeek = 6;
+			_days = new Day[_classes.Count * workDaysInWeek];
 
-			var groupedByBell = _lessons
-				.GroupBy(l => l.Bell)
-				.Select(g => g.ToList())
-				.ToList();
-			var transposed = groupedByBell.Transpose();
-			//for (int i = 0; i < daysInWeek; i++) {
-			for (int j = 0; j < _classes.Count; j++) {
-				_days[/*i * _classes.Count*/ j] = new Day() {
-					DayOfWeek = ( DayOfWeek.Monday ),
-					SchoolClass = _classes[j],
-					Lessons = transposed[j]
-				};
-			}
-			//}
-			await _db.Days.AddRangeAsync(_days);
-			await _db.SaveChangesAsync();
+			//var groupedByBell = _lessons
+			//	.GroupBy(l => l.Bell)
+			//	.Select(g => g.ToList())
+			//	.ToList()
+			//;
 
+			//var transposed = groupedByBell.Transpose();
 
-		}
-
-		private Lesson[] _lessons;
-
-		private async Task InitializeLessons() {
-			_lessons = new Lesson[_classes.Count * bellNumber];
 			var rand = new Random();
-			for (int i = 0; i < _classes.Count; i++) {
-				for (int j = 0; j < bellNumber; j++) {
-					_lessons[i * _bells.Length + j] = new Lesson() {
-						Bell = _bells[j],
-						Subject = _subjects[rand.Next() % _subjects.Length]
+			for (int i = 0; i < workDaysInWeek; i++) {
+				for (int j = 0; j < _classes.Count; j++) {
+					List<Lesson> tempLessonsList = new List<Lesson>();
+					for (int k = 0; k < _bells.Length; k++) {
+						tempLessonsList.Add(
+							new Lesson() {
+								Bell = _bells[k],
+								Subject = _subjects[rand.Next() % _subjects.Length]
+							}
+						);
+					}
+					_days[i * _classes.Count + j] = new Day() {
+						DayOfWeek = (DayOfWeek)i + 1,
+						SchoolClass = _classes[j],
+						Lessons = tempLessonsList
 					};
-					//await _db.Lessons.AddAsync(_lessons[i + j]);
 				}
 			}
+			await _db.Days.AddRangeAsync(_days);
+			await _db.SaveChangesAsync();
+		}
 
+
+
+
+		private Lesson[] _lessons;
+		private async Task InitializeLessons() {
+			int daysInWeeks = 7;
+			_lessons = new Lesson[_classes.Count * bellNumber * daysInWeeks];
+			var rand = new Random();
+			for (int d = 0; d < daysInWeeks; d++) {
+				for (int i = 0; i < _classes.Count; i++) {
+					for (int j = 0; j < bellNumber; j++) {
+						int index = d * _classes.Count * bellNumber + i * bellNumber + j;
+						_lessons[index] = new Lesson() {
+							Bell = _bells[j],
+							Subject = _subjects[rand.Next() % _subjects.Length]
+						};
+					}
+				}
+			}
 			_db.Lessons.AddRange(_lessons);
 			await _db.SaveChangesAsync();
 		}
+
+
+
 
 		private List<SchoolClass> _classes;
 		private async Task InitializeSchoolClasses() {
