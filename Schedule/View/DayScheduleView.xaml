@@ -74,6 +74,7 @@
                 dd:DragDrop.DropHandler="{Binding}"
                 dd:DragDrop.IsDropTarget="True"
                 AutoGenerateColumns="True"
+                MinColumnWidth="100"
                 HeadersVisibility="All"
                 IsReadOnly="True"
                 RowHeaderTemplate="{StaticResource BellModelTemplate}"

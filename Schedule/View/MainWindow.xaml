@@ -27,7 +27,8 @@
             <MenuItem
                 Width="auto"
                 Command="{Binding Path=DayScheduleViewCommand}"
-                Header="Расписание" />
+                Header="Расписание" 
+                />
             <MenuItem
                 Width="auto"
                 Command="{Binding Path=ScheduleViewCommand}"

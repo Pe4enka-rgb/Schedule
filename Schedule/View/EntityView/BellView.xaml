@@ -36,7 +36,12 @@
                 Content="Изменить" />
         </WrapPanel>
 
-        <DataGrid DockPanel.Dock="Top" ItemsSource="{Binding Bells}">
+        <DataGrid
+            Margin="3"
+            dataGrid2D:Index.StartAt="1"
+            DockPanel.Dock="Top"
+            ItemsSource="{Binding Bells}"
+            RowHeaderStyle="{StaticResource RowNumbersStyle}">
             <DataGrid.Columns>
 
                 <DataGridTextColumn
@@ -51,7 +56,7 @@
 
             </DataGrid.Columns>
         </DataGrid>
-
-
+        <Grid />
     </DockPanel>
+
 </Page>

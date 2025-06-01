@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dataGrid2D="http://gu.se/DataGrid2D"
     xmlns:evm="clr-namespace:Schedule.ViewModels.EntityViewModels"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -37,12 +38,16 @@
                 CommandParameter="{Binding SelectedSchoolClass}"
                 Content="Изменить" />
         </WrapPanel>
-        <DataGrid AutoGenerateColumns="False" ItemsSource="{Binding ClassesModels}">
+        <DataGrid
+            dataGrid2D:Index.StartAt="1"
+            AutoGenerateColumns="False"
+            ItemsSource="{Binding ClassesModels}"
+            RowHeaderStyle="{StaticResource RowNumbersStyle}">
 
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding SchoolClass.Grade}" Header="Год" />
+                <DataGridTextColumn Binding="{Binding SchoolClass.Grade.Year}" Header="Год" />
                 <DataGridTextColumn Binding="{Binding SchoolClass.Letter}" Header="Буква" />
-                <DataGridTextColumn Binding="{Binding SchoolClass}" Header="Название" />
+                <!--<DataGridTextColumn Binding="{Binding SchoolClass}" Header="Название" />-->
             </DataGrid.Columns>
         </DataGrid>
     </DockPanel>

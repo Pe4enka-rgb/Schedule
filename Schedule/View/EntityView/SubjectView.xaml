@@ -5,6 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:dataGrid2D="http://gu.se/DataGrid2D"
     xmlns:evm="clr-namespace:Schedule.ViewModels.EntityViewModels"
     xmlns:local="clr-namespace:Schedule.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -41,9 +42,11 @@
 
         <DataGrid
             Width="auto"
+            dataGrid2D:Index.StartAt="1"
             DockPanel.Dock="Top"
-            HeadersVisibility="Column"
-            ItemsSource="{Binding Subjects}">
+            HeadersVisibility="All"
+            ItemsSource="{Binding Subjects}"
+            RowHeaderStyle="{StaticResource RowNumbersStyle}">
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Width="auto"
