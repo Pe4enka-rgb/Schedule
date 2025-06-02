@@ -8,6 +8,7 @@ namespace Schedule.Infrastracture.DI {
 				.AddSingleton<ReferenceViewModel>()
 				.AddSingleton<ScheduleViewModel>()
 				.AddSingleton<DayScheduleViewModel>()
+				.AddSingleton<SubjectListToDragViewModel>()
 
 		;
 

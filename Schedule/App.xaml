@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="/Templates/MainWIndowViewModel.xaml" />
                 <ResourceDictionary Source="Infrastracture/Commands/DialogResult.xaml" />
                 <ResourceDictionary Source="Templates/ScheduleModel.xaml" />
+                <ResourceDictionary Source="Templates/EntitiesTemplates.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <DI:ViewModelLocator x:Key="Locator" />
         </ResourceDictionary>

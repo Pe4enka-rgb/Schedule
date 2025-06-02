@@ -8,6 +8,7 @@
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:infra="clr-namespace:Schedule.Infrastracture"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:views="clr-namespace:Schedule.View"
     Title="DayScheduleView"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -20,23 +21,11 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
 
-    <DockPanel Background="DarkCyan">
 
-        <StackPanel Background="DarkCyan">
-            <TextBlock
-                HorizontalAlignment="Center"
-                DockPanel.Dock="Left"
-                FontSize="24"
-                Foreground="Snow"
-                Text="Предметы" />
-            <ListBox
-                dd:DragDrop.IsDragSource="True"
-                Background="DarkCyan"
-                DockPanel.Dock="Left"
-                Foreground="Snow"
-                ItemsSource="{Binding Subjects}"
-                SelectedItem="{Binding SelectedListBoxSubject}"
-                SelectionMode="Single" />
+
+    <DockPanel Background="DarkCyan">
+        <StackPanel>
+            <views:SubjectsListToDragView />
             <StackPanel>
                 <TextBlock DockPanel.Dock="Bottom" Text="{Binding HoveredValue.Bell.Start}" />
                 <TextBlock DockPanel.Dock="Bottom" Text="{Binding HoveredValue.Subject.Name}" />
@@ -74,9 +63,9 @@
                 dd:DragDrop.DropHandler="{Binding}"
                 dd:DragDrop.IsDropTarget="True"
                 AutoGenerateColumns="True"
-                MinColumnWidth="100"
                 HeadersVisibility="All"
                 IsReadOnly="True"
+                MinColumnWidth="100"
                 RowHeaderTemplate="{StaticResource BellModelTemplate}"
                 SelectionMode="Extended"
                 SelectionUnit="Cell">

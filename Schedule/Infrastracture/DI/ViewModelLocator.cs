@@ -12,5 +12,7 @@ namespace Schedule.Infrastracture.DI {
 			App.Services.GetRequiredService<ScheduleViewModel>();
 		public DayScheduleViewModel DayScheduleViewModel =>
 			App.Services.GetRequiredService<DayScheduleViewModel>();
+		public SubjectListToDragViewModel SubjectListToDragViewModel =>
+			App.Services.GetRequiredService<SubjectListToDragViewModel>();
 	}
 }

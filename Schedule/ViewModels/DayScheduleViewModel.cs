@@ -29,7 +29,6 @@ namespace Schedule.ViewModels {
 		public int HoveredRowIndex {
 			get => _hoveredRowIndex;
 			set {
-
 				_hoveredRowIndex = value;
 				OnPropertyChanged();
 			}
@@ -202,7 +201,7 @@ namespace Schedule.ViewModels {
 
 			dropInfo.Effects = DragDropEffects.Copy;
 			//dropInfo.DropTargetHintState = DropHintState.Active;
-			dropInfo.EffectText = "Поместить " + SelectedListBoxSubject.Name;
+			//dropInfo.EffectText = "Поместить " + SelectedListBoxSubject.Name;
 			dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
 
 		}

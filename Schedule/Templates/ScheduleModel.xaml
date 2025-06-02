@@ -4,33 +4,6 @@
     xmlns:e="clr-namespace:Schedule.DB.Entity;assembly=Schedule.DB"
     xmlns:m="clr-namespace:Schedule.Model">
 
-    <DataTemplate DataType="{x:Type e:Subject}">
-        <TextBlock Text="{Binding Name}" />
-    </DataTemplate>
-
-    <DataTemplate x:Key="LessonTemplate" DataType="{x:Type e:Lesson}">
-        <TextBlock Text="{Binding Subject.Name}" />
-    </DataTemplate>
-
-    <DataTemplate DataType="{x:Type e:SchoolClass}">
-        <WrapPanel>
-            <TextBlock Text="{Binding Grade.Year}" />
-            <TextBlock Text="{Binding Letter}" />
-        </WrapPanel>
-    </DataTemplate>
-
-    <DataTemplate x:Key="SchoolClassTemplate" DataType="{x:Type e:SchoolClass}">
-        <WrapPanel>
-            <TextBlock Text="{Binding Grade.Year}" />
-            <TextBlock Text="{Binding Letter}" />
-            <TextBlock Text=" Класс" />
-        </WrapPanel>
-    </DataTemplate>
-
-    <DataTemplate x:Key="GradeTemplate" DataType="{x:Type e:Grade}">
-        <TextBlock Text="{Binding Year}" />
-    </DataTemplate>
-
     <DataTemplate x:Key="LessonModelTemplate" DataType="{x:Type m:LessonModel}">
         <TextBlock Text="{Binding Subject.Name}" />
     </DataTemplate>
@@ -43,11 +16,11 @@
         </WrapPanel>
     </DataTemplate>
 
-    <DataTemplate DataType="{x:Type e:Bell}">
+    <DataTemplate x:Key="SchoolClassTemplate" DataType="{x:Type e:SchoolClass}">
         <WrapPanel>
-            <TextBlock Text="{Binding Start}" />
-            <TextBlock Text=" - " />
-            <TextBlock Text="{Binding End}" />
+            <TextBlock Text="{Binding Grade.Year}" />
+            <TextBlock Text="{Binding Letter}" />
+            <TextBlock Text=" Класс" />
         </WrapPanel>
     </DataTemplate>
 
