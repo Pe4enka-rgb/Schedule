@@ -37,29 +37,32 @@
                 CommandParameter="{Binding SelectedGrade}"
                 Content="Изменить" />
         </WrapPanel>
-        <DataGrid
-            Margin="5"
-            dataGrid2D:Index.StartAt="1"
-            DockPanel.Dock="Top"
-            HeadersVisibility="All"
-            IsReadOnly="True"
-            ItemsSource="{Binding Grades}"
-            RowHeaderStyle="{StaticResource RowNumbersStyle}"
-            SelectedItem="{Binding SelectedGrade}"
-            SelectionMode="Single">
+        <GroupBox Header="Уровни обучения">
 
 
-            <DataGrid.Columns>
-                <DataGridTextColumn
-                    Width="auto"
-                    Binding="{Binding Year}"
-                    Header="Название" />
-                <DataGridTextColumn
-                    Width="*"
-                    Binding="{Binding Description}"
-                    Header="Описание" />
-            </DataGrid.Columns>
-        </DataGrid>
+            <DataGrid
+                Margin="5"
+                dataGrid2D:Index.StartAt="1"
+                DockPanel.Dock="Top"
+                HeadersVisibility="All"
+                IsReadOnly="True"
+                ItemsSource="{Binding Grades}"
+                RowHeaderStyle="{StaticResource RowNumbersStyle}"
+                SelectedItem="{Binding SelectedGrade}"
+                SelectionMode="Single">
 
+
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="auto"
+                        Binding="{Binding Year}"
+                        Header="Название" />
+                    <DataGridTextColumn
+                        Width="*"
+                        Binding="{Binding Description}"
+                        Header="Описание" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
     </DockPanel>
 </Page>

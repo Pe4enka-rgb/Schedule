@@ -1,15 +1,16 @@
 ﻿using Schedule.DB.Entity;
-using Schedule.ViewModels.Base;
+using Schedule.Model.Base;
+using Schedule.Services.Interfaces;
 
-namespace Schedule.Model {
-	public class LessonModel : ViewModel {
+namespace Schedule.Model {	
+	public class LessonModel : ModelBase<Lesson>, IModelBase<Lesson> {
 
-		private Subject _subject;
-		public Subject Subject {
+		private Subject? _subject;
+		public Subject? Subject {
 			get => _subject;
 			set {
 				if (Set(ref _subject, value))
-					this.Lesson.Subject = value;
+					this.Entity.Subject = value;
 			}
 		}
 
@@ -18,12 +19,12 @@ namespace Schedule.Model {
 			get => _bell;
 			set {
 				if (Set(ref _bell, value))
-					this.Lesson.Bell = value;
+					this.Entity.Bell = value;
 			}
 		}
 
 		private Lesson _lesson;
-		public Lesson Lesson {
+		public override Lesson Entity {
 			get => _lesson;
 			set {
 				if (Set(ref _lesson, value)) {
@@ -35,7 +36,7 @@ namespace Schedule.Model {
 		}
 
 		public LessonModel(Lesson lesson) {
-			Lesson = lesson;
+			Entity = lesson;
 			Subject = lesson.Subject;
 			Bell = lesson.Bell;
 		}

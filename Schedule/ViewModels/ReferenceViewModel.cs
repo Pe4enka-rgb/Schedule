@@ -1,5 +1,6 @@
 ﻿using MathCore.WPF.Commands;
 using Schedule.DB.Entity;
+using Schedule.Interfaces;
 using Schedule.Services.Interfaces;
 using Schedule.ViewModels.Base;
 using Schedule.ViewModels.EntityViewModels;
@@ -7,11 +8,14 @@ using System.Windows.Input;
 
 namespace Schedule.ViewModels {
 	internal class ReferenceViewModel : ViewModel {
-		private readonly Interfaces.IRepository<Subject> _subjectRepository;
-		private readonly Interfaces.IRepository<Bell> _bellRepository;
-		private readonly Interfaces.IRepository<SchoolClass> _schoolClassRepository;
-		private readonly Interfaces.IRepository<Grade> _gradeRepository;
-		private readonly IUserDialog<Grade> _userDialog;
+		private readonly IRepository<Subject> _subjectRepository;
+		private readonly IRepository<Bell> _bellRepository;
+		private readonly IRepository<SchoolClass> _schoolClassRepository;
+		private readonly IRepository<Grade> _gradeRepository;
+		private readonly IUserDialog<Grade> _gradeUserDialog;
+		private readonly IUserDialog<Subject> _subjectUserDialog;
+		private readonly IUserDialog<Bell> _bellUserDialog;
+		private readonly IUserDialog<SchoolClass> _schoolClassUserDialog;
 
 		#region CurrentViewModel - Текущая Модель Представления
 
@@ -23,8 +27,6 @@ namespace Schedule.ViewModels {
 
 		#endregion
 
-
-
 		#region LoadData Command
 
 		private ICommand _LoadDataCommand;
@@ -32,11 +34,24 @@ namespace Schedule.ViewModels {
 			_LoadDataCommand ?? new LambdaCommandAsync(OnLoadDataCommandExecuted);
 
 		private async Task OnLoadDataCommandExecuted() {
-			CurrentViewModel = new GradeViewModel(_gradeRepository, _userDialog);
+			CurrentViewModel = new GradeViewModel(_gradeRepository, _gradeUserDialog);
 		}
 
 		#endregion
 
+		#region Grade View Command
+		private ICommand _gradeViewCommand;
+		public ICommand GradeViewCommand => _gradeViewCommand
+			??= new LambdaCommand(OnGradeViewCommandExecuted);
+		private void OnGradeViewCommandExecuted() {
+			if (!CurrentViewModel.GetType().Equals(typeof(GradeViewModel)))
+				CurrentViewModel = new GradeViewModel(
+					_gradeRepository,
+					_gradeUserDialog
+				);
+		}
+
+		#endregion
 
 		#region Subject View Command
 		private ICommand _subjectViewCommand;
@@ -49,7 +64,10 @@ namespace Schedule.ViewModels {
 			if (CurrentViewModel.GetType().Equals(typeof(SubjectViewModel)))
 				return;
 
-			CurrentViewModel = new SubjectViewModel(_subjectRepository);
+			CurrentViewModel = new SubjectViewModel(
+				_subjectRepository,
+				_subjectUserDialog
+			);
 		}
 		#endregion
 
@@ -59,7 +77,10 @@ namespace Schedule.ViewModels {
 		?? new LambdaCommand(OnBellViewCommandExecuted);
 		private void OnBellViewCommandExecuted() {
 			if (!CurrentViewModel.GetType().Equals(typeof(BellViewModel)))
-				CurrentViewModel = new BellViewModel(_bellRepository);
+				CurrentViewModel = new BellViewModel(
+					_bellRepository,
+					_bellUserDialog
+					);
 		}
 		#endregion
 
@@ -72,50 +93,34 @@ namespace Schedule.ViewModels {
 		private void OnSchoolClassViewCommandExecuted() {
 			CurrentViewModel = new SchoolClassViewModel(
 				_schoolClassRepository,
-				_gradeRepository
+				_gradeRepository,
+				_schoolClassUserDialog
 			);
 		}
 		#endregion
 
-
-		#region Grade View Command
-		private ICommand _gradeViewCommand;
-		public ICommand GradeViewCommand => _gradeViewCommand
-		??= new LambdaCommand(OnGradeViewCommandExecuted);
-		private void OnGradeViewCommandExecuted() {
-			if (!CurrentViewModel.GetType().Equals(typeof(GradeViewModel)))
-				CurrentViewModel = new GradeViewModel(_gradeRepository, _userDialog);
-		}
-
-		#endregion
-
-
-		#region Day View Command
-		private ICommand _dayViewCommand;
-		public ICommand DayViewCommand => _dayViewCommand
-		?? new LambdaCommand(OnDayViewCommandExecuted, CanDayViewCommandExecute);
-		private bool CanDayViewCommandExecute() => true;
-		private void OnDayViewCommandExecuted() {
-			CurrentViewModel = new DayViewModel(
-				_schoolClassRepository,
-				_subjectRepository
-			);
-		}
-		#endregion
 
 		public ReferenceViewModel() { }
 		public ReferenceViewModel(
-			Interfaces.IRepository<Subject> subjectRepository,
-			Interfaces.IRepository<Bell> bellRepository,
-			Interfaces.IRepository<SchoolClass> schoolClassRepository,
-			Interfaces.IRepository<Grade> gradeRepository,
-			IUserDialog<Grade> userDialog) {
+			IRepository<Subject> subjectRepository,
+			IRepository<Bell> bellRepository,
+			IRepository<SchoolClass> schoolClassRepository,
+			IRepository<Grade> gradeRepository,
 
+			IUserDialog<Grade> gradeUserDialog,
+			IUserDialog<Subject> subjectUserDialog,
+			IUserDialog<Bell> bellUserDialog,
+			IUserDialog<SchoolClass> schoolClassUserDialog
+			) {
 			_subjectRepository = subjectRepository;
 			_bellRepository = bellRepository;
 			_schoolClassRepository = schoolClassRepository;
 			_gradeRepository = gradeRepository;
-			_userDialog = userDialog;
+
+			_gradeUserDialog = gradeUserDialog;
+			_subjectUserDialog = subjectUserDialog;
+			_bellUserDialog = bellUserDialog;
+			_schoolClassUserDialog = schoolClassUserDialog;
 		}
 	}
 }

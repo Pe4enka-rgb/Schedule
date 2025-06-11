@@ -20,5 +20,24 @@ namespace Schedule.Services {
 
 			return true;
 		}
+
+
+	}
+
+	internal class UserDialogSchoolClassService : IUserDialog<SchoolClass> {
+		public bool Edit(SchoolClass item) {
+			var schoolClassEditViewModel = new SchoolClassEditViewModel(item);
+			var schoolClassEditView = new SchoolClassEditView() {
+				DataContext = schoolClassEditViewModel
+			};
+
+			if (schoolClassEditView.ShowDialog() != false)
+				return false;
+
+			item.Grade = schoolClassEditViewModel.Grade;
+			item.Letter = schoolClassEditViewModel.Letter;
+
+			return true;
+		}
 	}
 }

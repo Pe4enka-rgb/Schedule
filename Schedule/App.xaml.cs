@@ -12,9 +12,7 @@ namespace Schedule {
 	public partial class App : Application {
 
 		public bool IsDesignTime;
-
 		public static Window CurrentWindow => FocusedWindow ?? ActiveWindow;
-
 		public static Window ActiveWindow => Application.Current.Windows
 			.OfType<Window>()
 			.FirstOrDefault(w => w.IsActive)

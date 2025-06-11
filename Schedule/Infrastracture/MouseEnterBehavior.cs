@@ -9,15 +9,15 @@ namespace Schedule.Infrastracture {
 	public class MouseEnterBehavior : Behavior<FrameworkElement> {
 		protected override void OnAttached() {
 			base.OnAttached();
-			AssociatedObject.MouseMove += OnMouseEnter;
+			AssociatedObject.MouseMove += OnMouseMove;
 		}
 
 		protected override void OnDetaching() {
 			base.OnDetaching();
-			AssociatedObject.MouseMove -= OnMouseEnter;
+			AssociatedObject.MouseMove -= OnMouseMove;
 		}
 
-		private void OnMouseEnter(object sender, MouseEventArgs e) {
+		private void OnMouseMove(object sender, MouseEventArgs e) {
 			var element = sender as FrameworkElement;
 			if (element == null)
 				return;
@@ -46,10 +46,10 @@ namespace Schedule.Infrastracture {
 			}
 			if (rowIndex < 0 || columnIndex < 0)
 				return;
-
 			// Получаем ViewModel
-			var viewModel = dataGrid.DataContext as DayScheduleViewModel;
-			if (viewModel != null) {
+			if (dataGrid.DataContext is DayScheduleViewModel dayScheduleViewModel) {
+				var viewModel = dayScheduleViewModel;
+
 				try {
 					viewModel.HoveredRowIndex = rowIndex;
 					viewModel.HoveredColumnIndex = columnIndex;
@@ -59,8 +59,18 @@ namespace Schedule.Infrastracture {
 					viewModel.HoveredValue = null;
 				}
 
-			}
+			} else if (dataGrid.DataContext is ScheduleViewModel scheduleViewModel) {
+				var viewModel = scheduleViewModel;
 
+				try {
+					viewModel.HoveredRowIndex = rowIndex;
+					viewModel.HoveredColumnIndex = columnIndex;
+					viewModel.HoveredValue = viewModel.LessonsList[columnIndex][rowIndex];
+				}
+				catch (NullReferenceException) {
+					viewModel.HoveredValue = null;
+				}
+			}
 		}
 	}
 }

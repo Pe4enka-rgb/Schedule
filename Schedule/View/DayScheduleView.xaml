@@ -1,8 +1,10 @@
-﻿<Page
+﻿
+<Page
     x:Class="Schedule.View.DayScheduleView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:data="clr-namespace:Schedule.Data"
     xmlns:dataGrid2D="http://gu.se/DataGrid2D"
     xmlns:dd="urn:gong-wpf-dragdrop"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
@@ -10,8 +12,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:views="clr-namespace:Schedule.View"
     Title="DayScheduleView"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="483"
+    d:DesignWidth="1223"
     DataContext="{Binding Path=DayScheduleViewModel, Source={StaticResource Locator}}"
     mc:Ignorable="d">
 
@@ -20,64 +22,91 @@
             <i:InvokeCommandAction Command="{Binding LoadDataCommand}" />
         </i:EventTrigger>
     </i:Interaction.Triggers>
-
+    <Page.Resources>
+        <data:DayOfWeekToLocalizedStringConverter x:Key="DayOfWeekToLocalizedStringConverter" />
+    </Page.Resources>
 
 
     <DockPanel Background="DarkCyan">
-        <StackPanel>
+        <StackPanel DockPanel.Dock="Left">
+            <!--  Список предметов  -->
             <views:SubjectsListToDragView />
             <StackPanel>
-                <TextBlock DockPanel.Dock="Bottom" Text="{Binding HoveredValue.Bell.Start}" />
-                <TextBlock DockPanel.Dock="Bottom" Text="{Binding HoveredValue.Subject.Name}" />
+                <TextBlock
+                    DockPanel.Dock="Bottom"
+                    Foreground="LightGray"
+                    Text="{Binding HoveredValue.Bell.Start}" />
+                <TextBlock
+                    DockPanel.Dock="Bottom"
+                    Foreground="LightGray"
+                    Text="{Binding HoveredValue.Subject.Name}" />
                 <TextBlock Text="{Binding SelectedListBoxSubject.Name}" />
             </StackPanel>
         </StackPanel>
         <WrapPanel DockPanel.Dock="Top">
-
-            <Button
-                x:Name="BtnSave"
-                Command="{Binding SaveCommand}"
-                Content="Сохранить" />
-
-            <Button
-                x:Name="BtnDelete"
-                Command="{Binding}"
-                Content="Удалить" />
-
-            <Button
-                x:Name="BtnEdit"
-                Command="{Binding DrainTableCommand}"
-                Content="Опустошить" />
+            <TextBlock
+                FontSize="24"
+                Foreground="Snow"
+                Text="Выбранный день недели: " />
+            <ComboBox
+                Width="180"
+                FontSize="20"
+                ItemsSource="{Binding DaysOfWeek, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, Mode=TwoWay}"
+                SelectedItem="{Binding SelectedDayOfWeek, UpdateSourceTrigger=PropertyChanged}">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock FontSize="20" Text="{Binding Converter={StaticResource DayOfWeekToLocalizedStringConverter}}" />
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
 
         </WrapPanel>
-        <WrapPanel>
-            <TextBlock />
+        <DockPanel DockPanel.Dock="Top">
+            <ItemsControl
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                ItemsSource="{Binding SelectedDayOfWeek}">
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock HorizontalAlignment="Center" Text="{Binding}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+
+            </ItemsControl>
+
             <!--  DATA GRID  -->
             <DataGrid
-                dataGrid2D:Cell.Template="{StaticResource LessonTemplate}"
-                dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding SchoolClasses, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
-                dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonModels2DTransposed, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay}"
-                dataGrid2D:ItemsSource.RowHeadersSource="{Binding BellModelsList, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
-                dataGrid2D:Selected.CellItem="{Binding SelectedDataGridLesson, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
-                dataGrid2D:Selected.Index="{Binding SelectedDataGridLessonIndex, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+                dataGrid2D:Cell.Template="{StaticResource LessonModelTemplate}"
+                dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding SchoolClasses, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+                dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonModels2DTransposed, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True, Mode=TwoWay}"
+                dataGrid2D:ItemsSource.RowHeadersSource="{Binding BellModelsList, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+                dataGrid2D:Selected.CellItem="{Binding SelectedDataGridLesson, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+                dataGrid2D:Selected.Index="{Binding SelectedDataGridLessonIndex, UpdateSourceTrigger=PropertyChanged, NotifyOnSourceUpdated=True, NotifyOnTargetUpdated=True}"
+                dd:DragDrop.DefaultDragAdornerOpacity="NaN"
                 dd:DragDrop.DropHandler="{Binding}"
+                dd:DragDrop.DropTargetAdornerBrush="DarkCyan"
                 dd:DragDrop.IsDropTarget="True"
                 AutoGenerateColumns="True"
+                CanUserReorderColumns="False"
+                DockPanel.Dock="Right"
                 HeadersVisibility="All"
                 IsReadOnly="True"
                 MinColumnWidth="100"
                 RowHeaderTemplate="{StaticResource BellModelTemplate}"
-                SelectionMode="Extended"
+                SelectionMode="Single"
                 SelectionUnit="Cell">
+                <!--  Биндинг для получения элемента Lesson под мышью  -->
                 <i:Interaction.Behaviors>
                     <infra:MouseEnterBehavior />
                 </i:Interaction.Behaviors>
+
                 <DataGrid.InputBindings>
                     <KeyBinding Key="Delete" Command="{Binding DeleteLessonCommand}" />
                 </DataGrid.InputBindings>
 
             </DataGrid>
-        </WrapPanel>
+        </DockPanel>
         <!--  DATA GRID  -->
         <Grid DockPanel.Dock="Bottom" />
     </DockPanel>

@@ -8,6 +8,9 @@ namespace Schedule.Services {
 			services
 				.AddSingleton(services)
 				.AddTransient<IUserDialog<Grade>, UserDialogGradeService>()
+				.AddTransient<IUserDialog<Subject>, UserDialogSubjectService>()
+				.AddTransient<IUserDialog<Bell>, UserDialogBellService>()
+				.AddTransient<IUserDialog<SchoolClass>, UserDialogSchoolClassService>()
 		;
 	}
 }

@@ -40,6 +40,7 @@ namespace Schedule.ViewModels.EntityViewModels {
 		}
 
 		#endregion
+
 		#region AddGrade Command
 
 		private ICommand _AddGradeCommand;
@@ -57,6 +58,7 @@ namespace Schedule.ViewModels.EntityViewModels {
 		}
 
 		#endregion
+
 		#region EditGrade Command
 		private ICommand _EditGradeCommand;
 		public ICommand EditGradeCommand => _EditGradeCommand
@@ -74,11 +76,12 @@ namespace Schedule.ViewModels.EntityViewModels {
 		}
 
 		#endregion
+
 		#region DeleteGrade Command
 
 		private ICommand _DeleteGradeCommand;
 		public ICommand DeleteGradeCommand => _DeleteGradeCommand
-		??= new LambdaCommand<Grade>(OnDeleteGradeCommandExecuted);
+		??= new LambdaCommand<Grade>(OnDeleteGradeCommandExecuted, CanDeleteGradeCommandExecuted);
 
 		private void OnDeleteGradeCommandExecuted(Grade parametrGrade) {
 
@@ -94,9 +97,6 @@ namespace Schedule.ViewModels.EntityViewModels {
 		private bool CanDeleteGradeCommandExecuted(Grade grade) => grade != null || SelectedGrade != null;
 
 		#endregion
-
-		private void PreviewTextInput(object sender, TextCompositionEventArgs e) {
-		}
 
 		public GradeViewModel(
 			IRepository<Grade> gradeRepository,

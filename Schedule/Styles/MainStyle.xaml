@@ -60,7 +60,6 @@
 
 
     <Style x:Key="RowNumbersStyle" TargetType="{x:Type DataGridRowHeader}">
-        <Setter Property="Content" 
-                Value="{Binding Path=(dataGrid2D:Index.OfRow), RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}" />
+        <Setter Property="Content" Value="{Binding Path=(dataGrid2D:Index.OfRow), RelativeSource={RelativeSource AncestorType={x:Type DataGridRow}}}" />
     </Style>
 </ResourceDictionary>

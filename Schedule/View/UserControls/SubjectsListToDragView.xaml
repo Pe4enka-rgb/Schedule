@@ -20,14 +20,14 @@
 
 
     <Grid>
-        <StackPanel Background="DarkCyan">
+        <StackPanel Background="DarkCyan" >
             <TextBlock
                 HorizontalAlignment="Center"
                 DockPanel.Dock="Left"
                 FontSize="24"
                 Foreground="Snow"
                 Text="Предметы" />
-            <ListBox
+            <ListBox BorderBrush="DarkCyan"
                 dd:DragDrop.IsDragSource="True"
                 Background="DarkCyan"
                 DockPanel.Dock="Left"

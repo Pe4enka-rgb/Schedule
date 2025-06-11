@@ -1,7 +1,7 @@
 ﻿using Schedule.DB.Entity.Base;
 
 namespace Schedule.Services.Interfaces {
-	interface IUserDialog<T> where T : BaseEntity {
-		public bool Edit(T item);
+	public interface IModelBase<out T> where T : BaseEntity {
+		T Entity { get; }
 	}
 }

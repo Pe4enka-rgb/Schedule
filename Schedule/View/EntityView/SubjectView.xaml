@@ -35,38 +35,51 @@
     <DockPanel Style="{StaticResource defaultStyle}">
 
         <WrapPanel DockPanel.Dock="Top">
-            <Button Name="BtnAdd" Content="Добавить" />
-            <Button Name="BtnDelete" Content="Удалить" />
-            <Button Name="BtnEdit" Content="Изменить" />
+            <Button
+                Name="BtnAdd"
+                Command="{Binding AddGradeCommand}"
+                Content="Добавить" />
+            <Button
+                Name="BtnDelete"
+                Command="{Binding DeleteGradeCommand}"
+                CommandParameter="{Binding SelectedSubject}"
+                Content="Удалить" />
+            <Button
+                Name="BtnEdit"
+                Command="{Binding AddGradeCommand}"
+                CommandParameter="{Binding SelectedSubject}"
+                Content="Изменить" />
         </WrapPanel>
-
-        <DataGrid
-            Width="auto"
-            dataGrid2D:Index.StartAt="1"
-            DockPanel.Dock="Top"
-            HeadersVisibility="All"
-            ItemsSource="{Binding Subjects}"
-            RowHeaderStyle="{StaticResource RowNumbersStyle}">
-            <DataGrid.Columns>
-                <DataGridTextColumn
-                    Width="auto"
-                    Binding="{Binding Name}"
-                    Header="Название" />
-                <DataGridTextColumn
-                    Width="auto"
-                    Binding="{Binding Difficulty}"
-                    Header="Сложность" />
-                <DataGridTextColumn
-                    Width="auto"
-                    Binding="{Binding HoursPerDay}"
-                    Header="Часов в День" />
-                <DataGridTextColumn
-                    Width="auto"
-                    Binding="{Binding HoursPerWeek}"
-                    Header="Часов в Неделю" />
-            </DataGrid.Columns>
-        </DataGrid>
-
+        <GroupBox Header="Предметы">
+            <DataGrid
+                Width="auto"
+                dataGrid2D:Index.StartAt="1"
+                DockPanel.Dock="Top"
+                HeadersVisibility="All"
+                ItemsSource="{Binding Subjects}"
+                RowHeaderStyle="{StaticResource RowNumbersStyle}"
+                SelectedItem="{Binding SelectedSubject}"
+                SelectionMode="Single">
+                <DataGrid.Columns>
+                    <DataGridTextColumn
+                        Width="auto"
+                        Binding="{Binding Name}"
+                        Header="Название" />
+                    <DataGridTextColumn
+                        Width="auto"
+                        Binding="{Binding Difficulty}"
+                        Header="Сложность" />
+                    <DataGridTextColumn
+                        Width="auto"
+                        Binding="{Binding HoursPerDay}"
+                        Header="Часов в День" />
+                    <DataGridTextColumn
+                        Width="auto"
+                        Binding="{Binding HoursPerWeek}"
+                        Header="Часов в Неделю" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </GroupBox>
     </DockPanel>
 
 </Page>

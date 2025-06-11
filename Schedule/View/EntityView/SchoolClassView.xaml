@@ -41,8 +41,11 @@
         <DataGrid
             dataGrid2D:Index.StartAt="1"
             AutoGenerateColumns="False"
+            IsReadOnly="True"
             ItemsSource="{Binding ClassesModels}"
-            RowHeaderStyle="{StaticResource RowNumbersStyle}">
+            RowHeaderStyle="{StaticResource RowNumbersStyle}"
+            SelectedItem="{Binding SelectedSchoolClass}"
+            SelectionMode="Single">
 
             <DataGrid.Columns>
                 <DataGridTextColumn Binding="{Binding SchoolClass.Grade.Year}" Header="Год" />

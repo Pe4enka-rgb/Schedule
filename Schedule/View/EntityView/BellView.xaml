@@ -24,15 +24,17 @@
         <WrapPanel DockPanel.Dock="Top">
             <Button
                 x:Name="BtnAdd"
-                Command="{Binding}"
+                Command="{Binding AddBellCommand}"
                 Content="Добавить" />
             <Button
                 x:Name="BtnDelete"
-                Command="{Binding}"
+                Command="{Binding DeleteBellCommand}"
+                CommandParameter="{Binding SelectedBell}"
                 Content="Удалить" />
             <Button
                 x:Name="BtnEdit"
-                Command="{Binding}"
+                Command="{Binding EditBellCommand}"
+                CommandParameter="{Binding SelectedBell}"
                 Content="Изменить" />
         </WrapPanel>
 
@@ -40,8 +42,11 @@
             Margin="3"
             dataGrid2D:Index.StartAt="1"
             DockPanel.Dock="Top"
+            IsReadOnly="True"
             ItemsSource="{Binding Bells}"
-            RowHeaderStyle="{StaticResource RowNumbersStyle}">
+            RowHeaderStyle="{StaticResource RowNumbersStyle}"
+            SelectedItem="{Binding SelectedBell}"
+            SelectionMode="Single">
             <DataGrid.Columns>
 
                 <DataGridTextColumn

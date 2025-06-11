@@ -1,14 +1,16 @@
-﻿using MathCore.WPF.Commands;
+﻿using GongSolutions.Wpf.DragDrop;
+using MathCore.WPF.Commands;
+using Schedule.Data;
 using Schedule.DB.Entity;
 using Schedule.Interfaces;
 using Schedule.Model;
 using Schedule.ViewModels.Base;
 using System.Collections.ObjectModel;
+using System.Windows;
 using System.Windows.Input;
-using Lesson = Schedule.DB.Entity.Lesson;
 
 namespace Schedule.ViewModels {
-	internal class ScheduleViewModel : ViewModel {
+	internal class ScheduleViewModel : ViewModel, IDropTarget {
 		private readonly IRepository<SchoolClass> _schoolClassRepository;
 		private readonly IRepository<Bell> _bellRepository;
 		private readonly IRepository<Day> _dayRepository;
@@ -25,6 +27,32 @@ namespace Schedule.ViewModels {
 				Set(ref _daysOfWeek, value);
 			}
 		}
+
+		#region Hovered
+
+		private int _hoveredRowIndex;
+
+		public int HoveredRowIndex {
+			get => _hoveredRowIndex;
+			set {
+				_hoveredRowIndex = value;
+				OnPropertyChanged();
+			}
+		}
+
+		private int _hoveredColumnIndex;
+		public int HoveredColumnIndex {
+			get => _hoveredColumnIndex;
+			set => Set(ref _hoveredColumnIndex, value);
+		}
+
+		private LessonModel _hoveredValue;
+		public LessonModel HoveredValue {
+			get => _hoveredValue;
+			set => Set(ref _hoveredValue, value);
+		}
+
+		#endregion
 
 		#region Entity
 
@@ -70,8 +98,8 @@ namespace Schedule.ViewModels {
 
 		#region SelectedItems
 
-		private Lesson _selectedDataGridLesson;
-		public Lesson SelectedDataGridLesson {
+		private LessonModel _selectedDataGridLesson;
+		public LessonModel SelectedDataGridLesson {
 			get => _selectedDataGridLesson;
 			set => Set(ref _selectedDataGridLesson, value);
 		}
@@ -99,10 +127,10 @@ namespace Schedule.ViewModels {
 			set => Set(ref _gradeWithSchoolClassesList, value);
 		}
 
-		private ObservableCollection<ObservableCollection<Lesson>> _lessonsList;
-		public ObservableCollection<ObservableCollection<Lesson>> LessonsList {
-			get { return _lessonsList; }
-			set { Set(ref _lessonsList, value); }
+		private ObservableCollection<ObservableCollection<LessonModel>> _lessonsList;
+		public ObservableCollection<ObservableCollection<LessonModel>> LessonsList {
+			get => _lessonsList;
+			set => Set(ref _lessonsList, value);
 		}
 		#endregion
 
@@ -115,6 +143,20 @@ namespace Schedule.ViewModels {
 		public ICommand LoadDataCommand =>
 			_loadDataCommand ??= new LambdaCommand(OnLoadDataCommandExecuted);
 		private void OnLoadDataCommandExecuted() {
+			Grades = _gradesRepository.Items.ToList();
+
+			SchoolClasses = _schoolClassRepository.Items.ToList();
+
+			Bells = _bellRepository.Items.ToList();
+
+			Lessons = _lessonRepository.Items.ToList();
+
+			Subjects = _subjectsRepository.Items.ToList();
+
+			Days = _dayRepository.Items.ToList();
+
+			SelectedSchoolClass = SchoolClasses.FirstOrDefault()!;
+
 			GradeWithSchoolClassesList = new();
 			for (int i = 0; i < Grades.Count; i++) {
 				GradeWithSchoolClassesList
@@ -141,11 +183,54 @@ namespace Schedule.ViewModels {
 			LessonsList = Days
 					.Where(d => d.SchoolClass.Id == newSchoolClass.Id)
 					.OrderBy(d => d.DayOfWeek)
-					.Select(day => day.Lessons.ToObservableCollection())
+					.Select(day => day.Lessons.ToLessonModelCollection().ToObservableCollection())
 					.ToObservableCollection()
 			;
 
 		}
+
+		void IDropTarget.DragOver(IDropInfo dropInfo) {
+
+			if (!dropInfo.IsSameDragDropContextAsSource)
+				return;
+			if (dropInfo.TargetItem == null)
+				return;
+
+			dropInfo.VisualTarget.CaptureMouse();
+
+			dropInfo.Effects = DragDropEffects.Copy;
+			//dropInfo.DropTargetHintState = DropHintState.Active;
+			//dropInfo.EffectText = "Поместить " + SelectedListBoxSubject.Name;
+			dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+
+		}
+
+		void IDropTarget.Drop(IDropInfo dropInfo) {
+			if (dropInfo.Data is not Subject draggedItem)
+				return;
+			dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+			dropInfo.Effects = DragDropEffects.Copy;
+
+			LessonsList[HoveredColumnIndex][HoveredRowIndex]
+				.Subject = draggedItem;
+
+			SelectedDataGridLesson =
+				LessonsList
+					[HoveredColumnIndex]
+					[HoveredRowIndex]
+				;
+			// Update Lesson
+			_lessonRepository.Update(
+				LessonsList
+					[HoveredColumnIndex]
+					[HoveredRowIndex]
+					.Entity
+			);
+
+			dropInfo.VisualTarget.ReleaseMouseCapture();
+		}
+
+
 
 		#endregion
 
@@ -164,17 +249,6 @@ namespace Schedule.ViewModels {
 			_subjectsRepository = subjectsRepository;
 			_gradesRepository = gradesRepository;
 
-			Grades = new(_gradesRepository.Items.ToList());
-
-			SchoolClasses = new(_schoolClassRepository.Items.ToList());
-
-			Bells = new(_bellRepository.Items.ToList());
-
-			Lessons = new(_lessonRepository.Items.ToList());
-
-			Subjects = new(_subjectsRepository.Items.ToList());
-
-			Days = new(_dayRepository.Items.ToList());
 
 
 

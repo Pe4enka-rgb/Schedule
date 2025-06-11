@@ -22,6 +22,25 @@ namespace Schedule.ViewModels {
 
 		#endregion
 
+		#region Properties
+		private DayOfWeek _selectedDayOfWeek;
+		public DayOfWeek SelectedDayOfWeek {
+			get => _selectedDayOfWeek;
+			set {
+				if (Set(ref _selectedDayOfWeek, value))
+					SetTableData(value);
+			}
+		}
+
+
+		private ObservableCollection<DayOfWeek> _daysOfWeek;
+		public ObservableCollection<DayOfWeek> DaysOfWeek {
+			get => _daysOfWeek;
+			set {
+				Set(ref _daysOfWeek, value);
+			}
+		}
+
 		#region Hovered
 
 		private int _hoveredRowIndex;
@@ -90,12 +109,6 @@ namespace Schedule.ViewModels {
 			set => Set(ref _lessonModels2DTransposed, value);
 		}
 
-		private ObservableCollection<ObservableCollection<LessonModel>> _lessonModels2DObservableCollection;
-		public ObservableCollection<ObservableCollection<LessonModel>> LessonModels2DObservableCollection {
-			get => _lessonModels2DObservableCollection;
-			set => Set(ref _lessonModels2DObservableCollection, value);
-		}
-
 		private List<BellModel> _bellModelsList;
 		public List<BellModel> BellModelsList {
 			get => _bellModelsList;
@@ -108,45 +121,53 @@ namespace Schedule.ViewModels {
 
 		private LessonModel _selectedDataGridLesson;
 		public LessonModel SelectedDataGridLesson {
-			get { return _selectedDataGridLesson; }
-			set { Set(ref _selectedDataGridLesson, value); }
+			get => _selectedDataGridLesson;
+			set => Set(ref _selectedDataGridLesson, value);
 		}
 
 		private RowColumnIndex _selectedDataGridLessonIndex;
 		public RowColumnIndex SelectedDataGridLessonIndex {
-			get { return _selectedDataGridLessonIndex; }
-			set { Set(ref _selectedDataGridLessonIndex, value); }
+			get => _selectedDataGridLessonIndex;
+			set => Set(ref _selectedDataGridLessonIndex, value);
 		}
 
 		private Subject _selectedListBoxSubject;
 		public Subject SelectedListBoxSubject {
-			get { return _selectedListBoxSubject; }
-			set { Set(ref _selectedListBoxSubject, value); }
+			get => _selectedListBoxSubject;
+			set => Set(ref _selectedListBoxSubject, value);
 		}
 
 
 		#endregion
 
+		#endregion
 		#region Commands
 
 		private ICommand _loadDataCommand;
 		public ICommand LoadDataCommand =>
 			_loadDataCommand ??= new LambdaCommand(OnLoadDataCommandExecuted);
 		private void OnLoadDataCommandExecuted() {
-			Subjects = new(_subjectsRepository.Items.ToList());
-			SchoolClasses = new(_schoolClassRepository.Items.ToList());
-			Bells = new(_bellRepository.Items.ToList());
-			Lessons = new(_lessonRepository.Items.ToList());
-			Days = new(_dayRepository.Items.ToObservableCollection());
+			Subjects = _subjectsRepository.Items.ToList();
+			SchoolClasses = _schoolClassRepository.Items.ToList();
+			Bells = _bellRepository.Items.ToList();
+			Lessons = _lessonRepository.Items.ToList();
+			Days = _dayRepository.Items.ToObservableCollection();
 
-			LessonModels2DTransposed = Days
-					.Where(day => day.DayOfWeek == DayOfWeek.Monday)
-					.Select(day => day.Lessons.ToLessonModelCollection().ToObservableCollection())
-					.ToObservableCollection()
-			;
-
+			DaysOfWeek = [];
+			for (int i = 1; i < 7; i++) {
+				DaysOfWeek.Add((DayOfWeek)i);
+			}
 
 			BellModelsList = Bells.Select(bell => new BellModel(bell)).ToList();
+		}
+
+		private void SetTableData(DayOfWeek dayOfWeek) {
+			LessonModels2DTransposed = Days
+					.Where(day => day.DayOfWeek == dayOfWeek)
+					.Select(day => day.Lessons.ToLessonModelCollection().ToObservableCollection())
+
+					.ToObservableCollection()
+				;
 		}
 
 		private ICommand _deleteLessonCommand;
@@ -158,12 +179,24 @@ namespace Schedule.ViewModels {
 					[SelectedDataGridLessonIndex.Column]
 					[SelectedDataGridLessonIndex.Row]
 					.Subject = null;
+			// TODO Сделать расширение работающее для типов BaseModel,
+			// TODO позволяющее обращаться к коллекции и обновлять изменения в базе данных
+			//LessonModels2DTransposed[SelectedDataGridLessonIndex.Column]
+			//	.UpdateEntity(SelectedDataGridLessonIndex.Row, _lessonRepository);
+
+			//LessonModels2DTransposed.UpdateEntity(
+			//	SelectedDataGridLessonIndex.Column,
+			//	SelectedDataGridLessonIndex.Row,
+			//	_lessonRepository
+			//	);
+
+
 			// Update Lesson
 			_lessonRepository.Update(
 				LessonModels2DTransposed
 						[SelectedDataGridLessonIndex.Column]
 						[SelectedDataGridLessonIndex.Row]
-						.Lesson
+						.Entity
 			);
 		}
 
@@ -174,9 +207,9 @@ namespace Schedule.ViewModels {
 		private void OnDrainTableCommandCommandExecuted() {
 			LessonModels2DTransposed = new ObservableCollection<ObservableCollection<LessonModel>>();
 			for (int i = 0; i < SchoolClasses.Count; i++) {
-				ObservableCollection<LessonModel> temp = new ObservableCollection<LessonModel>();
-				for (int j = 0; j < Bells.Count; j++) {
-					temp.Add(new(new() { Bell = Bells[j] }));
+				ObservableCollection<LessonModel> temp = [];
+				foreach (var bell in Bells) {
+					temp.Add(new LessonModel(new Lesson { Bell = bell }));
 				}
 				LessonModels2DTransposed.Add(temp);
 			}
@@ -203,34 +236,33 @@ namespace Schedule.ViewModels {
 			//dropInfo.DropTargetHintState = DropHintState.Active;
 			//dropInfo.EffectText = "Поместить " + SelectedListBoxSubject.Name;
 			dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+			
 
 		}
 
 		void IDropTarget.Drop(IDropInfo dropInfo) {
+			if (dropInfo.Data is not Subject draggedItem)
+				return;
+			dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+			dropInfo.Effects = DragDropEffects.Copy;
 
-			if (dropInfo.Data is Subject draggedItem) {
+			LessonModels2DTransposed[HoveredColumnIndex][HoveredRowIndex]
+				.Subject = draggedItem;
 
-				dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-				dropInfo.Effects = DragDropEffects.Copy;
-
-				LessonModels2DTransposed[HoveredColumnIndex][HoveredRowIndex]
-					.Subject = draggedItem;
-
-				SelectedDataGridLesson =
-					LessonModels2DTransposed
+			SelectedDataGridLesson =
+				LessonModels2DTransposed
 						[HoveredColumnIndex]
-						[HoveredRowIndex]
-					;
-				// Update Lesson
-				_lessonRepository.Update(
-					LessonModels2DTransposed
+					[HoveredRowIndex]
+				;
+			// Update Lesson
+			_lessonRepository.Update(
+				LessonModels2DTransposed
 						[HoveredColumnIndex]
-						[HoveredRowIndex]
-						.Lesson
-					);
+					[HoveredRowIndex]
+					.Entity
+			);
 
-				dropInfo.VisualTarget.ReleaseMouseCapture();
-			}
+			dropInfo.VisualTarget.ReleaseMouseCapture();
 		}
 		#endregion
 

@@ -6,11 +6,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:data="clr-namespace:Schedule.Data"
     xmlns:dataGrid2D="http://gu.se/DataGrid2D"
+    xmlns:dd="urn:gong-wpf-dragdrop"
     xmlns:e="clr-namespace:Schedule.DB.Entity;assembly=Schedule.DB"
     xmlns:infrastracture="clr-namespace:Schedule.Infrastracture"
     xmlns:m="clr-namespace:Schedule.Model"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    xmlns:view="clr-namespace:Schedule.View"
     Margin="0"
     d:DesignHeight="450"
     d:DesignWidth="800"
@@ -18,8 +20,9 @@
     mc:Ignorable="d">
     <Page.Resources>
         <data:DayOfWeekToRussianStringConverter x:Key="DayOfWeekConverter" />
-        <DataTemplate x:Key="DayOfWeekTemplate" DataType="{x:Type system:DayOfWeek}">
-            <TextBlock Text="{Binding Converter={StaticResource DayOfWeekConverter}}" />
+        <data:DayOfWeekToLocalizedStringConverter x:Key="DayOfWeekToLocalizedStringConverter" />
+        <DataTemplate DataType="{x:Type system:DayOfWeek}">
+            <TextBlock FontSize="20" Text="{Binding Converter={StaticResource DayOfWeekToLocalizedStringConverter}}" />
         </DataTemplate>
     </Page.Resources>
 
@@ -30,9 +33,12 @@
     </b:Interaction.Triggers>
 
     <DockPanel Background="DarkCyan">
+        <StackPanel Width="150">
+
+        <TextBlock Text="Классы" Foreground="Snow" FontSize="24" HorizontalAlignment="Center"></TextBlock>
 
         <!--  Список годов обучения  -->
-        <TreeView
+        <TreeView Background="DarkCyan" BorderBrush="DarkCyan"
             Padding="10"
             DockPanel.Dock="Left"
             Foreground="Snow"
@@ -40,25 +46,32 @@
             ItemsSource="{Binding GradeWithSchoolClassesList}">
 
             <!--  Список классов в каждом году  -->
-            <TreeView.Resources />
+            <TreeView.Resources >
+            </TreeView.Resources>
             <!--  Возможность выбрать класс  -->
             <b:Interaction.Behaviors>
                 <infrastracture:BindableSelectedItemBehavior SelectedItem="{Binding SelectedSchoolClass, Mode=TwoWay}" />
             </b:Interaction.Behaviors>
+
         </TreeView>
+        </StackPanel>
+        <view:SubjectsListToDragView DockPanel.Dock="Left" />
         <WrapPanel Background="Snow" DockPanel.Dock="Top">
             <TextBlock FontSize="20" Text="Расписание класса: " />
             <TextBlock FontSize="20" Text="{Binding SelectedSchoolClass.Grade.Year}" />
             <TextBlock FontSize="20" Text="{Binding SelectedSchoolClass.Letter}" />
         </WrapPanel>
         <DataGrid
-            dataGrid2D:Cell.Template="{StaticResource LessonTemplate}"
+            dataGrid2D:Cell.Template="{StaticResource LessonModelTemplate}"
             dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding DaysOfWeek}"
             dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonsList}"
             dataGrid2D:ItemsSource.RowHeadersSource="{Binding Bells}"
             dataGrid2D:Selected.CellItem="{Binding SelectedDataGridLesson}"
+            dd:DragDrop.DropHandler="{Binding}"
+            dd:DragDrop.IsDropTarget="True"
             AutoGenerateColumns="True"
             DockPanel.Dock="Top"
+            CanUserReorderColumns="False"
             FontSize="16"
             HeadersVisibility="All"
             SelectionMode="Single"
@@ -71,8 +84,12 @@
                 <DataGridTextColumn Header="Пятница" />
                 <DataGridTextColumn Header="Суббота" />
             </DataGrid.Columns>-->
+            <!--  Биндинг для получения элемента Lesson под мышью  -->
+            <b:Interaction.Behaviors>
+                <infrastracture:MouseEnterBehavior />
+            </b:Interaction.Behaviors>
         </DataGrid>
-        <Grid DockPanel.Dock="Bottom"/>
+        <Grid DockPanel.Dock="Bottom" />
 
     </DockPanel>
 </Page>
