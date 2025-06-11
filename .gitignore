@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /.editorconfig
 /Schedule/Data/TimeOnlyExtension.cs
+/Schedule/Data/UpdateEntityByModel.cs
