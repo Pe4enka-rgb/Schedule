@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Schedule.ViewModels;
+using Schedule.ViewModels.EntityViewModels;
 
 namespace Schedule.Infrastracture.DI {
 	internal static class ViewModelRegistrator {
@@ -9,6 +10,11 @@ namespace Schedule.Infrastracture.DI {
 				.AddSingleton<ScheduleViewModel>()
 				.AddSingleton<DayScheduleViewModel>()
 				.AddSingleton<SubjectListToDragViewModel>()
+
+				.AddSingleton<GradeViewModel>()
+				.AddSingleton<SubjectViewModel>()
+				.AddSingleton<BellViewModel>()
+				.AddSingleton<SchoolClassViewModel>()
 
 		;
 

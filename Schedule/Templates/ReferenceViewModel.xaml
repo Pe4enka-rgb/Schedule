@@ -19,10 +19,4 @@
         <ev:SchoolClassView DataContext="{Binding}" />
     </DataTemplate>
 
-
-    <DataTemplate DataType="{x:Type evm:GradeViewModel}">
-        <ev:GradeView DataContext="{Binding}" />
-    </DataTemplate>
-
-
 </ResourceDictionary>

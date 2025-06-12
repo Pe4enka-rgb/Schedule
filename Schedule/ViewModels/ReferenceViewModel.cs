@@ -3,7 +3,6 @@ using Schedule.DB.Entity;
 using Schedule.Interfaces;
 using Schedule.Services.Interfaces;
 using Schedule.ViewModels.Base;
-using Schedule.ViewModels.EntityViewModels;
 using System.Windows.Input;
 
 namespace Schedule.ViewModels {
@@ -31,73 +30,15 @@ namespace Schedule.ViewModels {
 
 		private ICommand _LoadDataCommand;
 		public ICommand LoadDataCommand =>
-			_LoadDataCommand ?? new LambdaCommandAsync(OnLoadDataCommandExecuted);
+			_LoadDataCommand ?? new LambdaCommand(OnLoadDataCommandExecuted);
 
-		private async Task OnLoadDataCommandExecuted() {
-			CurrentViewModel = new GradeViewModel(_gradeRepository, _gradeUserDialog);
+		private void OnLoadDataCommandExecuted() {
+			//CurrentViewModel = new GradeViewModel(_gradeRepository, _gradeUserDialog);
 		}
 
 		#endregion
 
-		#region Grade View Command
-		private ICommand _gradeViewCommand;
-		public ICommand GradeViewCommand => _gradeViewCommand
-			??= new LambdaCommand(OnGradeViewCommandExecuted);
-		private void OnGradeViewCommandExecuted() {
-			if (!CurrentViewModel.GetType().Equals(typeof(GradeViewModel)))
-				CurrentViewModel = new GradeViewModel(
-					_gradeRepository,
-					_gradeUserDialog
-				);
-		}
 
-		#endregion
-
-		#region Subject View Command
-		private ICommand _subjectViewCommand;
-		public ICommand SubjectViewCommand => _subjectViewCommand
-		?? new LambdaCommand(OnSubjectViewCommandExecuted, CanSubjectViewCommandExecute);
-
-		private bool CanSubjectViewCommandExecute() => true;
-
-		private void OnSubjectViewCommandExecuted() {
-			if (CurrentViewModel.GetType().Equals(typeof(SubjectViewModel)))
-				return;
-
-			CurrentViewModel = new SubjectViewModel(
-				_subjectRepository,
-				_subjectUserDialog
-			);
-		}
-		#endregion
-
-		#region Bell View Command
-		private ICommand _bellViewCommand;
-		public ICommand BellViewCommand => _bellViewCommand
-		?? new LambdaCommand(OnBellViewCommandExecuted);
-		private void OnBellViewCommandExecuted() {
-			if (!CurrentViewModel.GetType().Equals(typeof(BellViewModel)))
-				CurrentViewModel = new BellViewModel(
-					_bellRepository,
-					_bellUserDialog
-					);
-		}
-		#endregion
-
-		#region SchoolClass View Command
-		private ICommand _schoolClassViewCommand;
-		public ICommand SchoolClassViewCommand => _schoolClassViewCommand
-		??= new LambdaCommand(OnSchoolClassViewCommandExecuted);
-
-
-		private void OnSchoolClassViewCommandExecuted() {
-			CurrentViewModel = new SchoolClassViewModel(
-				_schoolClassRepository,
-				_gradeRepository,
-				_schoolClassUserDialog
-			);
-		}
-		#endregion
 
 
 		public ReferenceViewModel() { }

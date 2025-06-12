@@ -10,9 +10,9 @@
 
     <DataTemplate x:Key="BellModelTemplate" DataType="{x:Type m:BellModel}">
         <WrapPanel>
-            <TextBlock Text="{Binding Bell.Start}" />
+            <TextBlock Text="{Binding Bell.Start, StringFormat=HH:mm}" />
             <TextBlock Text=" - " />
-            <TextBlock Text="{Binding Bell.End}" />
+            <TextBlock Text="{Binding Bell.End, StringFormat=HH:mm}" />
         </WrapPanel>
     </DataTemplate>
 

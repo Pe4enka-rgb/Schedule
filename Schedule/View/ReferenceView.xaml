@@ -2,7 +2,9 @@
     x:Class="Schedule.View.ReferenceView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:EntityView="clr-namespace:Schedule.View.EntityView"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:evm="clr-namespace:Schedule.ViewModels.EntityViewModels"
     xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:Schedule.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -16,15 +18,20 @@
         </i:EventTrigger>
     </i:Interaction.Triggers>
     <DockPanel>
-        <Menu>
-            <MenuItem Command="{Binding Path=GradeViewCommand}" Header="Уровни обучения" />
-            <MenuItem Command="{Binding Path=SubjectViewCommand}" Header="Предметы" />
-            <MenuItem Command="{Binding Path=BellViewCommand}" Header="Звонки" />
-            <MenuItem Command="{Binding Path=SchoolClassViewCommand}" Header="Классы" />
-        </Menu>
-        <DockPanel Background="Snow">
-            <Frame Content="{Binding CurrentViewModel}" NavigationUIVisibility="Hidden" />
-        </DockPanel>
+        <TabControl Background="Snow">
+            <TabItem Header="Уровни обучения">
+                <EntityView:GradeView />
+            </TabItem>
+            <TabItem Header="Предметы">
+                <EntityView:SubjectView />
+            </TabItem>
+            <TabItem Header="Звонки">
+                <EntityView:BellView />
+            </TabItem>
+            <TabItem Header="Классы">
+                <EntityView:SchoolClassView />
+            </TabItem>
+        </TabControl>
 
     </DockPanel>
 </UserControl>

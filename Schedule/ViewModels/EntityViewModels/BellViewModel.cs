@@ -34,12 +34,10 @@ namespace Schedule.ViewModels.EntityViewModels {
 		private ICommand _LoadDataCommand;
 
 		public ICommand LoadDataCommand =>
-			_LoadDataCommand ??= new LambdaCommandAsync(OnLoadDataCommandExecuted);
+			_LoadDataCommand ??= new LambdaCommand(OnLoadDataCommandExecuted);
 
-		private async Task OnLoadDataCommandExecuted() {
-			await Task.CompletedTask;
-
-			Bells = new(_bellRepository.Items.ToArray());
+		private void OnLoadDataCommandExecuted() {
+			Bells = _bellRepository.Items.ToObservableCollection();
 		}
 
 		#region Add command

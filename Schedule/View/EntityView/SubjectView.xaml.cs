@@ -4,7 +4,7 @@ namespace Schedule.View.EntityView {
 	/// <summary>
 	/// Логика взаимодействия для SubjectFrame.xaml
 	/// </summary>
-	public partial class SubjectView : Page {
+	public partial class SubjectView : UserControl {
 		public SubjectView() {
 			InitializeComponent();
 		}

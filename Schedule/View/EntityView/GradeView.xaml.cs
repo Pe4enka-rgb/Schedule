@@ -4,7 +4,7 @@ namespace Schedule.View.EntityView {
 	/// <summary>
 	/// Логика взаимодействия для GradeFrame.xaml
 	/// </summary>
-	public partial class GradeView : Page {
+	public partial class GradeView : UserControl {
 		public GradeView() {
 			InitializeComponent();
 		}

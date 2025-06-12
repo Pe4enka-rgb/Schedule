@@ -4,7 +4,7 @@ namespace Schedule.View.EntityView {
 	/// <summary>
 	/// Логика взаимодействия для SchoolClassView.xaml
 	/// </summary>
-	public partial class SchoolClassView : Page {
+	public partial class SchoolClassView : UserControl {
 		public SchoolClassView() {
 			InitializeComponent();
 		}

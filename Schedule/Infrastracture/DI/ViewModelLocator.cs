@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Schedule.ViewModels;
+using Schedule.ViewModels.EntityViewModels;
 
 namespace Schedule.Infrastracture.DI {
 	internal class ViewModelLocator {
@@ -14,5 +15,14 @@ namespace Schedule.Infrastracture.DI {
 			App.Services.GetRequiredService<DayScheduleViewModel>();
 		public SubjectListToDragViewModel SubjectListToDragViewModel =>
 			App.Services.GetRequiredService<SubjectListToDragViewModel>();
+
+		public GradeViewModel GradeViewModel =>
+			App.Services.GetRequiredService<GradeViewModel>();
+		public BellViewModel BellViewModel =>
+			App.Services.GetRequiredService<BellViewModel>();
+		public SubjectViewModel SubjectViewModel =>
+			App.Services.GetRequiredService<SubjectViewModel>();
+		public SchoolClassViewModel SchoolClassViewModel =>
+			App.Services.GetRequiredService<SchoolClassViewModel>();
 	}
 }

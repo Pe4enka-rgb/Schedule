@@ -1,5 +1,4 @@
 ﻿using MathCore.WPF.Commands;
-using Microsoft.EntityFrameworkCore;
 using Schedule.DB.Entity;
 using Schedule.Interfaces;
 using Schedule.Services.Interfaces;
@@ -30,10 +29,10 @@ namespace Schedule.ViewModels.EntityViewModels {
 
 		private ICommand _LoadDataCommand;
 		public ICommand LoadDataCommand =>
-			_LoadDataCommand ?? new LambdaCommandAsync(OnLoadDataCommandExecuted);
+			_LoadDataCommand ?? new LambdaCommand(OnLoadDataCommandExecuted);
 
-		private async Task OnLoadDataCommandExecuted() {
-			Subjects = new(await _subjectRepository.Items.ToArrayAsync());
+		private void OnLoadDataCommandExecuted() {
+			Subjects = _subjectRepository.Items.ToObservableCollection();
 		}
 
 		private ICommand _AddGradeCommand;

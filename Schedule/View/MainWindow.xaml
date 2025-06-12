@@ -19,7 +19,10 @@
     </Window.Resources>
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem FontSize="16" Header="File" Visibility="Collapsed"/>
+            <MenuItem
+                FontSize="16"
+                Header="File"
+                Visibility="Collapsed" />
             <MenuItem
                 Width="auto"
                 Command="{Binding Path=ReferenceViewCommand}"
@@ -27,8 +30,7 @@
             <MenuItem
                 Width="auto"
                 Command="{Binding Path=DayScheduleViewCommand}"
-                Header="Расписание" 
-                />
+                Header="Расписание" />
             <MenuItem
                 Width="auto"
                 Command="{Binding Path=ScheduleViewCommand}"
@@ -40,10 +42,8 @@
             DockPanel.Dock="Top" />
         <DockPanel>
 
-            <Frame Content="{Binding CurrentViewModel}" NavigationUIVisibility="Hidden">
-                <!--<ContentControl Content="{Binding CurrentViewModel}" />-->
-
-            </Frame>
+            <ContentControl Content="{Binding CurrentViewModel}" />
+            <!--<Frame Content="{Binding CurrentViewModel}" NavigationUIVisibility="Hidden" />-->
         </DockPanel>
 
 

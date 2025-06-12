@@ -28,9 +28,9 @@
 
     <DataTemplate DataType="{x:Type e:Bell}">
         <WrapPanel>
-            <TextBlock Text="{Binding Start}" />
+            <TextBlock Text="{Binding Start, StringFormat=HH:mm}" />
             <TextBlock Text=" - " />
-            <TextBlock Text="{Binding End}" />
+            <TextBlock Text="{Binding End, StringFormat=HH:mm}" />
         </WrapPanel>
     </DataTemplate>
 </ResourceDictionary>

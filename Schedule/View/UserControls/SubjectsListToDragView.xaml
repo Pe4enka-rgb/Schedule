@@ -20,16 +20,17 @@
 
 
     <Grid>
-        <StackPanel Background="DarkCyan" >
+        <StackPanel Background="DarkCyan">
             <TextBlock
                 HorizontalAlignment="Center"
                 DockPanel.Dock="Left"
                 FontSize="24"
                 Foreground="Snow"
                 Text="Предметы" />
-            <ListBox BorderBrush="DarkCyan"
+            <ListBox
                 dd:DragDrop.IsDragSource="True"
                 Background="DarkCyan"
+                BorderBrush="DarkCyan"
                 DockPanel.Dock="Left"
                 Foreground="Snow"
                 ItemTemplate="{StaticResource SubjectTemplate}"
