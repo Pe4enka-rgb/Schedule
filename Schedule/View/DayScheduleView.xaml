@@ -50,7 +50,7 @@
                 Width="180"
                 FontSize="20"
                 ItemsSource="{Binding DaysOfWeek, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, Mode=TwoWay}"
-                SelectedItem="{Binding SelectedDayOfWeek}">
+                SelectedItem="{Binding SelectedDayOfWeek, NotifyOnTargetUpdated=True, NotifyOnSourceUpdated=True, Mode=TwoWay}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock FontSize="20" Text="{Binding Converter={StaticResource DayOfWeekToLocalizedStringConverter}}" />

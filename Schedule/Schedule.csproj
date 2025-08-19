@@ -37,6 +37,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Schedule.DB\Schedule.DB.csproj" />
+    <ProjectReference Include="..\Schedule.Interfaces\Schedule.Interfaces.csproj" />
   </ItemGroup>
 
   <ItemGroup>

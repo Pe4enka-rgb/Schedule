@@ -35,6 +35,10 @@
                 Width="auto"
                 Command="{Binding Path=ScheduleViewCommand}"
                 Header="Расписание классов" />
+            <MenuItem
+                Width="auto"
+                Command="{Binding}"
+                Header="Настройки" />
         </Menu>
         <Border
             BorderBrush="SlateGray"

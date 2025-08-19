@@ -35,7 +35,7 @@ namespace Schedule.ViewModels.EntityViewModels {
 		?? new LambdaCommand(OnLoadDataCommandExecuted);
 
 		private void OnLoadDataCommandExecuted() {
-			Grades = _gradeRepository.Items.ToObservableCollection();
+			Grades = _gradeRepository.Items.OrderBy(g => g.Year).ToObservableCollection();
 		}
 
 		#endregion
@@ -70,7 +70,7 @@ namespace Schedule.ViewModels.EntityViewModels {
 				return;
 			}
 			_gradeRepository.Update(parametrGrade);
-			Grades.GroupBy(g => g.Year);
+			Grades = Grades.OrderBy(g => g.Year).ToObservableCollection();
 			SelectedGrade = parametrGrade;
 		}
 

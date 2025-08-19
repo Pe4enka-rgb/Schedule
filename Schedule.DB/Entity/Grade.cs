@@ -5,6 +5,6 @@ namespace Schedule.DB.Entity {
 		public int Year { get; set; }
 		public string? Description { get; set; } = String.Empty;
 		public virtual ICollection<SchoolClass> Classes { get; set; }
-		public virtual ICollection<Subject>? Curriculum { get; set; }
+		public virtual ICollection<Subject> Curriculum { get; set; }
 	}
 }

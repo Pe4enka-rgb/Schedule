@@ -5,8 +5,8 @@
     xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:data="clr-namespace:Schedule.Data"
-    xmlns:dataGrid2D="http://gu.se/DataGrid2D"
     xmlns:dd="urn:gong-wpf-dragdrop"
+    xmlns:dg2D="http://gu.se/DataGrid2D"
     xmlns:e="clr-namespace:Schedule.DB.Entity;assembly=Schedule.DB"
     xmlns:infrastracture="clr-namespace:Schedule.Infrastracture"
     xmlns:m="clr-namespace:Schedule.Model"
@@ -35,25 +35,48 @@
     <DockPanel Background="DarkCyan">
         <StackPanel Width="150">
 
-        <TextBlock Text="Классы" Foreground="Snow" FontSize="24" HorizontalAlignment="Center"></TextBlock>
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="24"
+                Foreground="Snow"
+                Text="Классы" />
 
-        <!--  Список годов обучения  -->
-        <TreeView Background="DarkCyan" BorderBrush="DarkCyan"
-            Padding="10"
-            DockPanel.Dock="Left"
-            Foreground="Snow"
-            ItemTemplate="{StaticResource GradeWithClassesTemplate}"
-            ItemsSource="{Binding GradeWithSchoolClassesList}">
+            <!--  Список годов обучения  -->
+            <TreeView
+                Padding="10"
+                Background="DarkCyan"
+                BorderBrush="DarkCyan"
+                DockPanel.Dock="Left"
+                Foreground="Snow"
+                ItemTemplate="{StaticResource GradeWithClassesTemplate}"
+                ItemsSource="{Binding GradeWithSchoolClassesList}">
+                <TreeView.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource {x:Type TreeViewItem}}" TargetType="{x:Type TreeViewItem}">
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="BorderBrush" Value="MediumAquamarine" />
+                                <Setter Property="BorderThickness" Value="1" />
+                                <Setter Property="Background" Value="Black" />
+                            </Trigger>
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsSelected" Value="True" />
+                                    <Condition Property="IsSelectionActive" Value="False" />
+                                </MultiTrigger.Conditions>
+                                <Setter Property="BorderBrush" Value="Black" />
+                            </MultiTrigger>
+                        </Style.Triggers>
 
-            <!--  Список классов в каждом году  -->
-            <TreeView.Resources >
-            </TreeView.Resources>
-            <!--  Возможность выбрать класс  -->
-            <b:Interaction.Behaviors>
-                <infrastracture:BindableSelectedItemBehavior SelectedItem="{Binding SelectedSchoolClass, Mode=TwoWay}" />
-            </b:Interaction.Behaviors>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <!--  Список классов в каждом году  -->
+                <TreeView.Resources />
+                <!--  Возможность выбрать класс  -->
+                <b:Interaction.Behaviors>
+                    <infrastracture:BindableSelectedItemBehavior SelectedItem="{Binding SelectedSchoolClass, Mode=TwoWay}" />
+                </b:Interaction.Behaviors>
 
-        </TreeView>
+            </TreeView>
         </StackPanel>
         <view:SubjectsListToDragView DockPanel.Dock="Left" />
         <WrapPanel Background="Snow" DockPanel.Dock="Top">
@@ -62,16 +85,17 @@
             <TextBlock FontSize="20" Text="{Binding SelectedSchoolClass.Letter}" />
         </WrapPanel>
         <DataGrid
-            dataGrid2D:Cell.Template="{StaticResource LessonModelTemplate}"
-            dataGrid2D:ItemsSource.ColumnHeadersSource="{Binding DaysOfWeek}"
-            dataGrid2D:ItemsSource.ColumnsSource="{Binding LessonsList}"
-            dataGrid2D:ItemsSource.RowHeadersSource="{Binding Bells}"
-            dataGrid2D:Selected.CellItem="{Binding SelectedDataGridLesson}"
+            dd:DragDrop.DragAdornerTemplate="{Binding HoveredValue}"
             dd:DragDrop.DropHandler="{Binding}"
             dd:DragDrop.IsDropTarget="True"
+            dg2D:Cell.Template="{StaticResource LessonModelTemplate}"
+            dg2D:ItemsSource.ColumnHeadersSource="{Binding DaysOfWeek}"
+            dg2D:ItemsSource.ColumnsSource="{Binding LessonsList}"
+            dg2D:ItemsSource.RowHeadersSource="{Binding Bells}"
+            dg2D:Selected.CellItem="{Binding SelectedDataGridLesson}"
             AutoGenerateColumns="True"
-            DockPanel.Dock="Top"
             CanUserReorderColumns="False"
+            DockPanel.Dock="Top"
             FontSize="16"
             HeadersVisibility="All"
             SelectionMode="Single"
@@ -85,6 +109,21 @@
                 <DataGridTextColumn Header="Суббота" />
             </DataGrid.Columns>-->
             <!--  Биндинг для получения элемента Lesson под мышью  -->
+            <DataGrid.RowHeaderStyle>
+                <Style BasedOn="{StaticResource {x:Type DataGridRowHeader}}" TargetType="DataGridRowHeader">
+                    <Setter Property="Padding" Value="3" />
+                    <Setter Property="BorderBrush" Value="DarkCyan" />
+                    <Setter Property="BorderThickness" Value="0,0,1,1" />
+                    <Setter Property="FontSize" Value="16" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                </Style>
+            </DataGrid.RowHeaderStyle>
+            <DataGrid.ColumnHeaderStyle>
+                <Style BasedOn="{StaticResource {x:Type DataGridColumnHeader}}" TargetType="DataGridColumnHeader">
+
+                    <Setter Property="HorizontalContentAlignment" Value="Center" />
+                </Style>
+            </DataGrid.ColumnHeaderStyle>
             <b:Interaction.Behaviors>
                 <infrastracture:MouseEnterBehavior />
             </b:Interaction.Behaviors>

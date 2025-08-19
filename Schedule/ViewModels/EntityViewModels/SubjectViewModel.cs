@@ -32,13 +32,13 @@ namespace Schedule.ViewModels.EntityViewModels {
 			_LoadDataCommand ?? new LambdaCommand(OnLoadDataCommandExecuted);
 
 		private void OnLoadDataCommandExecuted() {
-			Subjects = _subjectRepository.Items.ToObservableCollection();
+			Subjects = _subjectRepository.Items.OrderBy(s => s.Name).ToObservableCollection();
 		}
 
-		private ICommand _AddGradeCommand;
-		public ICommand AddGradeCommand => _AddGradeCommand
-			??= new LambdaCommand(OnAddGradeCommandExecuted);
-		private void OnAddGradeCommandExecuted() {
+		private ICommand _AddSubjectCommand;
+		public ICommand AddSubjectCommand => _AddSubjectCommand
+			??= new LambdaCommand(OnAddSubjectCommandExecuted);
+		private void OnAddSubjectCommandExecuted() {
 			Subject newSubject = new();
 			if (!_userDialog.Edit(newSubject)) {
 				return;
@@ -49,22 +49,25 @@ namespace Schedule.ViewModels.EntityViewModels {
 
 		}
 
-		private ICommand _EditGradeCommand;
-		public ICommand EditGradeCommand => _EditGradeCommand
-			??= new LambdaCommand<Subject>(OnEditGradeCommandExecuted);
-		private void OnEditGradeCommandExecuted(Subject parametrSubject) {
+		private ICommand _EditSubjectCommand;
+		public ICommand EditSubjectCommand => _EditSubjectCommand
+			??= new LambdaCommand<Subject>(OnEditSubjectCommandExecuted);
+		private void OnEditSubjectCommandExecuted(Subject parametrSubject) {
 			if (parametrSubject is null)
 				return;
+			if (!_userDialog.Edit(parametrSubject)) {
+				return;
+			}
 			_subjectRepository.Update(parametrSubject);
-			Subjects.GroupBy(s => s.Name);
+			Subjects = Subjects.OrderBy(s => s.Name).ToObservableCollection();
 			SelectedSubject = parametrSubject;
 		}
 
-		private ICommand _DeleteGradeCommand;
-		public ICommand DeleteGradeCommand => _DeleteGradeCommand
-			??= new LambdaCommand<Subject>(OnDeleteGradeCommandExecuted, CanDeleteGradeCommandExecuted);
-		private bool CanDeleteGradeCommandExecuted(Subject subject) => subject is not null || SelectedSubject is not null;
-		private void OnDeleteGradeCommandExecuted(Subject parametrSubject) {
+		private ICommand _DeleteSubjectCommand;
+		public ICommand DeleteSubjectCommand => _DeleteSubjectCommand
+			??= new LambdaCommand<Subject>(OnDeleteSubjectCommandExecuted, CanDeleteSubjectCommandExecuted);
+		private bool CanDeleteSubjectCommandExecuted(Subject subject) => subject is not null || SelectedSubject is not null;
+		private void OnDeleteSubjectCommandExecuted(Subject parametrSubject) {
 			var subjectToRemove = parametrSubject ?? SelectedSubject;
 
 			if (subjectToRemove != null) {

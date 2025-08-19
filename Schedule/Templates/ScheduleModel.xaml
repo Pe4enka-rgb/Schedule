@@ -17,20 +17,14 @@
     </DataTemplate>
 
     <DataTemplate x:Key="SchoolClassTemplate" DataType="{x:Type e:SchoolClass}">
-        <WrapPanel>
-            <TextBlock
-                FontSize="18"
-                Foreground="Snow"
-                Text="{Binding Grade.Year}" />
-            <TextBlock
-                FontSize="18"
-                Foreground="Snow"
-                Text="{Binding Letter}" />
-            <TextBlock
-                FontSize="18"
-                Foreground="Snow"
-                Text=" Класс" />
-        </WrapPanel>
+        <TextBlock Foreground="Snow" >
+            <TextBlock.Text>
+                <MultiBinding StringFormat="{}{0}{1} Класс">
+                    <Binding Path="Grade.Year" />
+                    <Binding Path="Letter" />
+                </MultiBinding>
+            </TextBlock.Text>
+        </TextBlock>
     </DataTemplate>
 
     <HierarchicalDataTemplate

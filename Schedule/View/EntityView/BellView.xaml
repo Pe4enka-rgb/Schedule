@@ -10,8 +10,8 @@
     xmlns:local="clr-namespace:Schedule.View"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     DataContext="{Binding BellViewModel, Source={StaticResource Locator}}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DesignHeight="100"
+    d:DesignWidth="300"
     mc:Ignorable="d">
 
     <UserControl.Resources>

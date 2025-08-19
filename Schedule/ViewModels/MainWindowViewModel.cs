@@ -62,11 +62,11 @@ namespace Schedule.ViewModels {
 
 		public MainWindowViewModel(
 			IUserDialog<Grade> userDialog,
-			Interfaces.IRepository<Subject> subjectRepository,
-			Interfaces.IRepository<Bell> bellRepository,
-			Interfaces.IRepository<SchoolClass> schoolClassRepository,
-			Interfaces.IRepository<Grade> gradeRepository,
-			Interfaces.IRepository<Day> dayRepository) {
+			IRepository<Subject> subjectRepository,
+			IRepository<Bell> bellRepository,
+			IRepository<SchoolClass> schoolClassRepository,
+			IRepository<Grade> gradeRepository,
+			IRepository<Day> dayRepository) {
 			_userDialog = userDialog;
 			_subjectRepository = subjectRepository;
 			_bellRepository = bellRepository;
